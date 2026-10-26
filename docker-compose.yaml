@@ -1,9 +1,11 @@
-version: "3.9"
+name: rag-kestra
 
 volumes:
   postgres-data:
     driver: local
   kestra-data:
+    driver: local
+  pgvector-data:
     driver: local
 
 networks:
@@ -11,11 +13,30 @@ networks:
     driver: bridge
 
 services:
+  pgvector:
+    image: ankane/pgvector:latest
+    container_name: rag_pgvector
+    environment:
+      POSTGRES_USER: kestra
+      POSTGRES_PASSWORD: k3str4
+      POSTGRES_DB: kestra
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgvector-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    networks:
+      - RAG_kestra-net
+
   postgres:
     image: postgres:18
-    container_name: kestra_postgres
+    container_name: rag_kestra_postgres
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql
     environment:
       POSTGRES_DB: kestra
       POSTGRES_USER: kestra
@@ -31,7 +52,7 @@ services:
   kestra:
     image: kestra/kestra:v1.3.35
     pull_policy: missing
-    container_name: kestra
+    container_name: rag_kestra
     stop_grace_period: 6m
     user: "root"
     command: server standalone
@@ -44,6 +65,7 @@ services:
       - /tmp/kestra-wd:/tmp/kestra-wd
     environment:
       KESTRA_CONFIGURATION: |
+        SLACK_BOT_TOKEN: $${SLACK_BOT_TOKEN}
         datasources:
           postgres:
             url: jdbc:postgresql://postgres:5432/kestra
@@ -72,6 +94,8 @@ services:
       - "8081:8081"
     depends_on:
       postgres:
+        condition: service_healthy
+      pgvector:
         condition: service_healthy
     networks:
       - RAG_kestra-net
