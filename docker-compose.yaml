@@ -14,16 +14,16 @@ networks:
 
 services:
   pgvector:
-    image: ankane/pgvector:latest
+    image: pgvector/pgvector:pg18
     container_name: rag_pgvector
     environment:
-      POSTGRES_USER: kestra
-      POSTGRES_PASSWORD: k3str4
-      POSTGRES_DB: kestra
+      POSTGRES_DB: rag
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: r4g_p4ss
     ports:
       - "5433:5432"
     volumes:
-      - pgvector-data:/var/lib/postgresql/data
+      - pgvector-data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
       interval: 30s
@@ -95,6 +95,27 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      pgvector:
+        condition: service_healthy
+    networks:
+      - RAG_kestra-net
+
+  api:
+    build: ./api
+    container_name: rag_api
+    environment:
+      DB_HOST: rag_pgvector
+      DB_PORT: "5432"
+      DB_NAME: rag
+      DB_USER: rag
+      DB_PASSWORD: r4g_p4ss
+      MISTRAL_MODEL: open-mistral-7b
+      MISTRAL_API_KEY: ${MISTRAL_API_KEY}
+      CORS_ORIGINS: http://localhost:5173,http://localhost:3000
+      HF_HUB_OFFLINE: "1"
+    ports:
+      - "8000:8000"
+    depends_on:
       pgvector:
         condition: service_healthy
     networks:
