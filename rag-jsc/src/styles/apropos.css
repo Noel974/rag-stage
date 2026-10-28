@@ -1,0 +1,98 @@
+.about {
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+  padding-bottom: 4rem;
+}
+
+.about-hero {
+  text-align: center;
+  padding: 5rem 2rem;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+
+  border-radius: 999px;
+
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--primary);
+
+  font-weight: 600;
+}
+
+.about-hero h1 {
+  max-width: 900px;
+  margin: 1.5rem auto;
+}
+
+.about-hero p {
+  max-width: 750px;
+  margin: 0 auto;
+  color: var(--text);
+}
+
+.about-section {
+  padding: 0 2rem;
+}
+
+.about-section h2 {
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.about-section p {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.cards-grid {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2rem;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.workflow {
+  margin-top: 3rem;
+
+  display: grid;
+  gap: 1.5rem;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.workflow-step {
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  padding: 1.5rem;
+
+  text-align: center;
+}
+
+.workflow-step span {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 1rem;
+
+  border-radius: 50%;
+
+  background: var(--primary);
+  color: white;
+
+  font-weight: 700;
+}

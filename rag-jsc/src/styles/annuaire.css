@@ -1,0 +1,91 @@
+.annuaire {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+}
+
+.annuaire-hero {
+  text-align: center;
+  padding: 5rem 2rem;
+}
+
+.hero-badge {
+  display: inline-flex;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.annuaire-hero p {
+  max-width: 700px;
+  margin: 1rem auto;
+}
+
+.annuaire-search {
+  margin-top: 2rem;
+}
+
+.annuaire-search input {
+  width: 100%;
+  max-width: 600px;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.organisation {
+  padding: 0 2rem;
+}
+
+.organisation h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.organisation-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.service-pill {
+  padding: 1rem 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.service-pill:hover {
+  border-color: var(--primary);
+}
+
+.service-section {
+  padding: 0 2rem;
+}
+
+.service-section h2 {
+  margin-bottom: 2rem;
+}
+
+.cards-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(320px, 1fr)
+  );
+}
+
+.card-infos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  color: var(--text);
+}

@@ -27,10 +27,10 @@ export default function Navbar() {
         id="navbar-menu"
         className={`navbar-links ${menuOpen ? "active" : ""}`}
       >
-        <li><a href="#accueil" onClick={closeMenu}>Accueil</a></li>
-        <li><a href="#apropos" onClick={closeMenu}>À propos</a></li>
-        <li><a href="#services" onClick={closeMenu}>Services</a></li>
-        <li><a href="#contact" onClick={closeMenu}>Contact</a></li>
+        <li><a href="/" onClick={closeMenu}>Accueil</a></li>
+        <li><a href="/apropos" onClick={closeMenu}>À propos</a></li>
+        <li><a href="/annuaire" onClick={closeMenu}>Annuaire</a></li>
+        <li><a href="/assitance" onClick={closeMenu}>Assistant IA</a></li>
       </ul>
     </nav>
   );
