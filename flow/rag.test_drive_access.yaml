@@ -1,0 +1,67 @@
+id: test_drive_access
+namespace: rag
+
+variables:
+  folder_id: "1DUnrfeyeJQaafqt20hSjNSqtN8OBci65"
+
+tasks:
+  - id: list_files
+    type: io.kestra.plugin.scripts.python.Script
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+    containerImage: python:3.12-slim
+    beforeCommands:
+      - pip install -q --no-cache-dir --retries 5 google-api-python-client google-auth
+    env:
+      SA_JSON: "{{ secret('GOOGLE_SA_JSON') }}"
+      FOLDER_ID: "{{ vars.folder_id }}"
+    script: |
+      import os, json
+      from google.oauth2 import service_account
+      from googleapiclient.discovery import build
+
+      info = json.loads(os.environ["SA_JSON"])
+      print("Compte utilisé :", info["client_email"])
+
+      creds = service_account.Credentials.from_service_account_info(
+      info, scopes=["https://www.googleapis.com/auth/drive.readonly"])    
+      drive = build("drive", "v3", credentials=creds)
+
+      res = drive.files().list(
+        q="trashed=false",
+        fields="files(id,name,mimeType,parents)",
+      ).execute()
+      for f in res.get("files", []):
+        print(f["name"], "|", f["mimeType"], "|", f["id"])
+      print(len(res.get("files", [])), "élément(s) visibles")
+
+  - id: test
+    type: io.kestra.plugin.scripts.python.Script
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      pullPolicy: NEVER
+    containerImage: rag-ingest:latest
+    env:
+      MISTRAL_API_KEY: "{{ secret('MISTRAL_API_KEY') }}"
+    script: |
+      import os
+      from langchain_huggingface import HuggingFaceEmbeddings
+      from langchain_mistralai import ChatMistralAI
+
+      print("Imports OK")
+
+      emb = HuggingFaceEmbeddings(
+          model_name="intfloat/multilingual-e5-base",
+          encode_kwargs={"normalize_embeddings": True},
+      )
+      doc_vec = emb.embed_documents(["passage: Le chat dort sur le canapé."])[0]
+      qry_vec = emb.embed_query("query: où est le chat ?")
+      print("Dimension :", len(doc_vec))
+      print("Similarité :", sum(a * b for a, b in zip(doc_vec, qry_vec)))
+
+      chat = ChatMistralAI(model="mistral-small-latest",
+                           mistral_api_key=os.environ["MISTRAL_API_KEY"])
+      try:
+          print("Mistral OK :", chat.invoke("Réponds simplement : OK.").content)
+      except Exception as e:
+          print("Mistral ERREUR :", e)

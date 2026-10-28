@@ -1,0 +1,373 @@
+id: rag-jsc9742026
+namespace: noel.team
+
+variables:
+  folder_id: "1DUnrfeyeJQaafqt20hSjNSqtN8OBci65"
+
+concurrency: 
+    limit: 1 
+    behavior: QUEUE
+
+tasks:
+  - id: ingest
+    type: io.kestra.plugin.scripts.python.Script
+    containerImage: rag-ingest:latest
+    pythonVersion: "3.12"
+    timeout: PT1H
+    taskRunner:
+      type: io.kestra.plugin.scripts.runner.docker.Docker
+      pullPolicy: NEVER
+    env:
+      SA_JSON: "{{ secret('GOOGLE_SA_JSON') }}"
+      PGPASSWORD: "{{ secret('PGVECTOR_PASSWORD') }}"
+      PGHOST: host.docker.internal
+      PGPORT: "5433"
+      FOLDER_ID: "{{ vars.folder_id }}"
+      MAX_ROWS: "5000"
+    script: |
+      import os, io, json, re, hashlib
+      import pandas as pd
+      import psycopg2
+      from psycopg2.extras import execute_values
+      from pypdf import PdfReader
+      from google.oauth2 import service_account
+      from googleapiclient.discovery import build
+
+      FOLDER_ID = os.environ["FOLDER_ID"].strip()
+      MAX_ROWS = int(os.environ.get("MAX_ROWS", "5000"))
+      ROWS_PER_CHUNK = 20
+      CHUNK_CHARS = 1500
+      OVERLAP = 200
+
+      FOLDER_MIME = "application/vnd.google-apps.folder"
+      GDOC = "application/vnd.google-apps.document"
+      GSLIDES = "application/vnd.google-apps.presentation"
+      GSHEET = "application/vnd.google-apps.spreadsheet"
+      XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+      # ---------- Drive ----------
+      info = json.loads(os.environ["SA_JSON"])
+      creds = service_account.Credentials.from_service_account_info(
+          info, scopes=["https://www.googleapis.com/auth/drive.readonly"])
+      drive = build("drive", "v3", credentials=creds)
+
+      def list_files(root):
+          out, stack = [], [root]
+          while stack:
+              fid = stack.pop()
+              token = None
+              while True:
+                  res = drive.files().list(
+                      q=f"'{fid}' in parents and trashed=false",
+                      fields="nextPageToken, files(id,name,mimeType,modifiedTime,md5Checksum,webViewLink)",
+                      pageSize=200, pageToken=token).execute()
+                  for f in res.get("files", []):
+                      if f["mimeType"] == FOLDER_MIME:
+                          stack.append(f["id"])
+                      else:
+                          out.append(f)
+                  token = res.get("nextPageToken")
+                  if not token:
+                      break
+          return out
+
+      # ---------- Découpage ----------
+      def split_text(text, size=CHUNK_CHARS, overlap=OVERLAP):
+          text = re.sub(r"\n{3,}", "\n\n", text).strip()
+          if not text:
+              return []
+          chunks, start = [], 0
+          while start < len(text):
+              end = min(start + size, len(text))
+              if end < len(text):
+                  cut = max(text.rfind("\n\n", start, end), text.rfind(". ", start, end))
+                  if cut > start + size // 2:
+                      end = cut + 1
+              chunks.append(text[start:end].strip())
+              if end >= len(text):
+                  break
+              start = max(end - overlap, start + 1)
+          return [c for c in chunks if c]
+
+      def decode(data):
+          for enc in ("utf-8-sig", "latin-1"):
+              try:
+                  return data.decode(enc)
+              except UnicodeDecodeError:
+                  pass
+
+      def from_text(text, name):
+          return [(f"Fichier: {name}\n{c}", {"part": i}) for i, c in enumerate(split_text(text))]
+
+      def from_pdf(data, name):
+          reader = PdfReader(io.BytesIO(data))
+          out = []
+          for p, page in enumerate(reader.pages, 1):
+              for c in split_text(page.extract_text() or ""):
+                  out.append((f"Fichier: {name} | Page {p}\n{c}", {"page": p}))
+          if not out:
+              raise ValueError("PDF sans texte extractible (scanné ? OCR non géré)")
+          return out
+
+      def rows_to_text(df):
+          lines = []
+          for _, row in df.iterrows():
+              lines.append(" | ".join(f"{c}: {v}" for c, v in row.items() if pd.notna(v)))
+          return "\n".join(lines)
+
+      def df_chunks(df, name, sheet=None):
+          df = df.dropna(how="all").dropna(axis=1, how="all")
+          if df.empty:
+              return []
+          df.columns = [str(c).strip() for c in df.columns]
+          total = len(df)
+          df = df.head(MAX_ROWS)
+          cols = list(df.columns)
+          label = f"Fichier: {name}" + (f" | Feuille: {sheet}" if sheet else "")
+          out = [(
+              f"{label} | Résumé\nColonnes: {', '.join(cols)}\nNombre de lignes: {total}\n"
+              f"Exemples:\n{rows_to_text(df.head(3))}",
+              {"sheet": sheet, "type": "summary", "columns": cols, "total_rows": total})]
+          for i in range(0, len(df), ROWS_PER_CHUNK):
+              block = df.iloc[i:i + ROWS_PER_CHUNK]
+              out.append((
+                  f"{label} | Lignes {i + 1}-{i + len(block)}\n{rows_to_text(block)}",
+                  {"sheet": sheet, "row_start": i + 1, "row_end": i + len(block), "columns": cols}))
+          return out
+
+      def detect_header(raw):
+          raw = raw.dropna(how="all").reset_index(drop=True)
+          if raw.empty:
+              return raw
+          need = max(1, (raw.shape[1] + 1) // 2)
+          for i in range(min(len(raw), 20)):
+              if raw.iloc[i].notna().sum() >= need:
+                  hdr = raw.iloc[i]
+                  body = raw.iloc[i + 1:].copy()
+                  body.columns = [str(h) if pd.notna(h) else f"col{j + 1}" for j, h in enumerate(hdr)]
+                  return body.reset_index(drop=True)
+          return raw
+
+      def from_excel(data, name, ext=".xlsx"):
+          sheets = pd.read_excel(io.BytesIO(data), sheet_name=None, header=None)
+          out = []
+          for sheet, raw in sheets.items():
+              out += df_chunks(detect_header(raw), name, sheet)
+          return out
+
+      def from_json(data, name):
+          obj = json.loads(decode(data))
+          if isinstance(obj, list):
+              out = []
+              for i in range(0, min(len(obj), MAX_ROWS), 10):
+                  block = obj[i:i + 10]
+                  text = json.dumps(block, ensure_ascii=False, indent=1)
+                  for c in split_text(text):
+                      out.append((f"Fichier: {name} | Éléments {i + 1}-{i + len(block)}\n{c}",
+                                  {"item_start": i + 1, "item_end": i + len(block)}))
+              return out
+          return from_text(json.dumps(obj, ensure_ascii=False, indent=1), name)
+
+      def extract(f):
+          """Retourne une liste (texte, metadata), ou None si le type n'est pas géré."""
+          mt, name = f["mimeType"], f["name"]
+          ext = os.path.splitext(name)[1].lower()
+          if mt in (GDOC, GSLIDES):
+              data = drive.files().export(fileId=f["id"], mimeType="text/plain").execute()
+              return from_text(decode(data), name)
+          if mt == GSHEET:
+              data = drive.files().export(fileId=f["id"], mimeType=XLSX_MIME).execute()
+              return from_excel(data, name)
+          if mt.startswith("application/vnd.google-apps."):
+              return None
+          if ext not in (".pdf", ".xlsx", ".xlsm", ".xls", ".csv", ".parquet", ".json", ".txt", ".md"):
+              return None
+          data = drive.files().get_media(fileId=f["id"]).execute()
+          if ext == ".pdf":
+              return from_pdf(data, name)
+          if ext in (".xlsx", ".xlsm", ".xls"):
+              return from_excel(data, name)
+          if ext == ".csv":
+              df = pd.read_csv(io.BytesIO(data), sep=None, engine="python", encoding_errors="replace")
+              return df_chunks(df, name)
+          if ext == ".parquet":
+              return df_chunks(pd.read_parquet(io.BytesIO(data)), name)
+          if ext == ".json":
+              return from_json(data, name)
+          return from_text(decode(data), name)
+
+      # ---------- Embeddings (chargés seulement si besoin) ----------
+      _model = None
+      def embed(texts):
+          global _model
+          if _model is None:
+              from sentence_transformers import SentenceTransformer
+              _model = SentenceTransformer("intfloat/multilingual-e5-base")
+              _model.max_seq_length = 512
+          vecs = _model.encode(["passage: " + t for t in texts], batch_size=16,
+                               normalize_embeddings=True, show_progress_bar=False)
+          return ["[" + ",".join(f"{x:.6f}" for x in v) + "]" for v in vecs.tolist()]
+
+      # ---------- Base ----------
+      conn = psycopg2.connect(host=os.environ["PGHOST"], port=os.environ["PGPORT"],
+                              dbname="rag", user="rag", password=os.environ["PGPASSWORD"])
+      with conn, conn.cursor() as cur:
+          cur.execute("SELECT drive_id, version, status FROM documents")
+          existing = {r[0]: (r[1], r[2]) for r in cur.fetchall()}
+
+      UPSERT = """
+      INSERT INTO documents (drive_id, name, mime_type, version, web_view_link, updated_at, indexed_at, status, error)
+      VALUES (%s, %s, %s, %s, %s, %s, now(), %s, %s)
+      ON CONFLICT (drive_id) DO UPDATE SET
+        name = EXCLUDED.name, mime_type = EXCLUDED.mime_type, version = EXCLUDED.version,
+        web_view_link = EXCLUDED.web_view_link, updated_at = EXCLUDED.updated_at,
+        indexed_at = now(), status = EXCLUDED.status, error = EXCLUDED.error
+      """
+
+      def chash(text):
+          return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+      def sync_chunks(conn, f, meta_doc, parts):
+          """Synchronise les chunks d'un fichier avec la base, sans tout réécrire :
+          - chunk identique (même hash)   -> conservé, embedding NON recalculé
+          - chunk nouveau ou modifié      -> embedding calculé puis inséré
+          - chunk absent de la nouvelle version -> supprimé
+          Tout est fait dans une seule transaction."""
+          items, seen = [], set()
+          for t, m in parts:
+              h = chash(t)
+              if h not in seen:
+                  seen.add(h)
+                  items.append((h, t, m))
+          new_hashes = [h for h, _, _ in items]
+          with conn, conn.cursor() as cur:
+              cur.execute(UPSERT, meta_doc + ("indexed", None))
+              cur.execute("SELECT content_hash FROM chunks WHERE drive_id = %s", (f["id"],))
+              old = {r[0] for r in cur.fetchall()}
+
+              # 1. Supprimer les chunks qui n'existent plus
+              cur.execute("DELETE FROM chunks WHERE drive_id = %s AND NOT (content_hash = ANY(%s))",
+                          (f["id"], new_hashes))
+              removed = cur.rowcount
+
+              # 2. Chunks conservés : on met à jour leur position et leurs métadonnées
+              kept = [(f["id"], h, i, json.dumps(m, default=str, ensure_ascii=False))
+                      for i, (h, t, m) in enumerate(items) if h in old]
+              if kept:
+                  execute_values(
+                      cur,
+                      """UPDATE chunks c SET chunk_index = v.idx, metadata = v.meta::jsonb
+                         FROM (VALUES %s) AS v(d, h, idx, meta)
+                         WHERE c.drive_id = v.d AND c.content_hash = v.h""",
+                      kept, template="(%s::text, %s::text, %s::int, %s::text)")
+
+              # 3. Nouveaux chunks : embeddings calculés uniquement pour eux
+              todo = [(h, i, t, m) for i, (h, t, m) in enumerate(items) if h not in old]
+              if todo:
+                  embs = embed([t for _, _, t, _ in todo])
+                  rows = [(f["id"], i, t, json.dumps(m, default=str, ensure_ascii=False), e, h)
+                          for (h, i, t, m), e in zip(todo, embs)]
+                  execute_values(
+                      cur,
+                      "INSERT INTO chunks (drive_id, chunk_index, content, metadata, embedding, content_hash) VALUES %s",
+                      rows, template="(%s, %s, %s, %s::jsonb, %s::vector, %s)")
+          return len(kept), len(todo), removed
+
+      chunk_stats = {"added": 0, "kept": 0, "removed": 0}
+
+      files = list_files(FOLDER_ID)
+      print(len(files), "fichier(s) dans Drive,", len(existing), "en base")
+      if not files and existing:
+          raise SystemExit("Drive renvoie 0 fichier alors que la base en contient : arrêt par sécurité")
+
+      stats = {"new": [], "updated": [], "deleted": [], "errors": [], "skipped": [], "unchanged": 0}
+
+      for f in files:
+          version = f.get("md5Checksum") or f["modifiedTime"]
+          prev = existing.get(f["id"])
+          if prev and prev[0] == version and prev[1] in ("indexed", "skipped"):
+              stats["unchanged"] += 1
+              continue
+          meta_doc = (f["id"], f["name"], f["mimeType"], version, f.get("webViewLink"), f["modifiedTime"])
+          try:
+              parts = extract(f)
+              if parts is None:
+                  with conn, conn.cursor() as cur:
+                      cur.execute(UPSERT, meta_doc + ("skipped", "Type de fichier non géré"))
+                  stats["skipped"].append(f["name"])
+                  continue
+              parts = [(t.replace("\x00", ""), m) for t, m in parts if t.strip()]
+              if not parts:
+                  raise ValueError("Aucun contenu extrait")
+              n_kept, n_added, n_removed = sync_chunks(conn, f, meta_doc, parts)
+              chunk_stats["kept"] += n_kept
+              chunk_stats["added"] += n_added
+              chunk_stats["removed"] += n_removed
+              stats["updated" if prev else "new"].append(f["name"])
+              print("OK", f["name"], "-> conservés:", n_kept, "| ajoutés:", n_added, "| supprimés:", n_removed)
+          except Exception as e:
+              print("ERREUR", f["name"], ":", e)
+              with conn, conn.cursor() as cur:
+                  cur.execute(UPSERT, meta_doc + ("error", str(e)[:500]))
+              stats["errors"].append(f"{f['name']} ({str(e)[:80]})")
+
+      # Fichiers supprimés de Drive
+      drive_ids = {f["id"] for f in files}
+      gone = [d for d in existing if d not in drive_ids]
+      if gone:
+          with conn, conn.cursor() as cur:
+              cur.execute("SELECT name FROM documents WHERE drive_id = ANY(%s)", (gone,))
+              stats["deleted"] = [r[0] for r in cur.fetchall()]
+              cur.execute("DELETE FROM documents WHERE drive_id = ANY(%s)", (gone,))
+      conn.close()
+
+      # ---------- Résumé pour Slack ----------
+      def names(lst):
+          return ", ".join(lst[:10]) + (" ..." if len(lst) > 10 else "")
+
+      changed = len(stats["new"]) + len(stats["updated"]) + len(stats["deleted"])
+      if not changed and not stats["errors"]:
+          summary = f":white_check_mark: Drive -> pgvector : rien de nouveau ({stats['unchanged']} fichier(s) à jour)."
+      else:
+          lines = [":arrows_counterclockwise: Drive -> pgvector : base mise à jour"]
+          if stats["new"]:
+              lines.append(f"• {len(stats['new'])} nouveau(x) : {names(stats['new'])}")
+          if stats["updated"]:
+              lines.append(f"• {len(stats['updated'])} modifié(s) : {names(stats['updated'])}")
+          if stats["deleted"]:
+              lines.append(f"• {len(stats['deleted'])} supprimé(s) : {names(stats['deleted'])}")
+          lines.append(f"• chunks : {chunk_stats['added']} ajouté(s), {chunk_stats['removed']} supprimé(s), "
+                       f"{chunk_stats['kept']} inchangé(s)")
+          if stats["errors"]:
+              lines.append(f":warning: {len(stats['errors'])} erreur(s) : {names(stats['errors'])}")
+          if stats["skipped"]:
+              lines.append(f"• {len(stats['skipped'])} ignoré(s) (type non géré)")
+          summary = "\n".join(lines)
+
+      print(summary)
+      print("::" + json.dumps({"outputs": {"summary": summary, "changed": changed,
+                                            "errors": len(stats["errors"])}}) + "::")
+
+  - id: slack_message
+    type: io.kestra.plugin.slack.SlackIncomingWebhook
+    url: "{{ secret('SLACK_WEBHOOK') }}"
+    payload: |
+      {
+        "text": {{ outputs.ingest.vars.summary | json }}
+      }
+
+errors:
+  - id: slack_error
+    type: io.kestra.plugin.slack.SlackIncomingWebhook
+    url: "{{ secret('SLACK_WEBHOOK') }}"
+    payload: |
+      {
+        "text": ":x: Ingestion Drive en échec (exécution {{ execution.id }})"
+      }
+
+triggers:
+  - id: hourly
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "*/20 * * * *"
+    recoverMissedSchedules: LAST
+    disabled: false
