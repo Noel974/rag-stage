@@ -3,29 +3,24 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Card from "../component/card";
-import { getIndexingStatus } from "../services/api";
 
-type IndexingStatus = {
-  documents: Record<string, number>;
-  chunks: number;
-  last_indexed_at: string | null;
-  errors: {
-    name: string;
-    error: string | null;
-  }[];
-};
+// Redux
+import { fetchIndexingStatus } from "../redux/features/ragSlice";
+import { useAppDispatch, useAppSelector } from "../redux/store/hoooks";
 
 export default function Home() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  // Récupération des données depuis Redux
+  const {
+    indexingStatus,
+    statusLoading,
+    statusError,
+  } = useAppSelector((state) => state.rag);
 
   // État de la recherche
   const [query, setQuery] = useState("");
-
-  // État des statistiques d'indexation
-  const [indexingStatus, setIndexingStatus] =
-    useState<IndexingStatus | null>(null);
-
-  const [statusError, setStatusError] = useState(false);
 
   // Gestion de la recherche
   const handleSearch = () => {
@@ -53,44 +48,14 @@ export default function Home() {
 
   // Récupération et actualisation des statistiques
   useEffect(() => {
-    let active = true;
+    dispatch(fetchIndexingStatus());
 
-    const refreshStatus = async () => {
-      try {
-        const data: IndexingStatus =
-          await getIndexingStatus();
-
-        if (!active) {
-          return;
-        }
-
-        setIndexingStatus(data);
-        setStatusError(false);
-      } catch (error: unknown) {
-        if (!active) {
-          return;
-        }
-
-        setStatusError(true);
-
-        console.error(
-          "Erreur lors de la récupération des statistiques :",
-          error
-        );
-      }
-    };
-
-    void refreshStatus();
-
-    const intervalId = window.setInterval(() => {
-      void refreshStatus();
+    const interval = window.setInterval(() => {
+      dispatch(fetchIndexingStatus());
     }, 10000);
 
-    return () => {
-      active = false;
-      window.clearInterval(intervalId);
-    };
-  }, []);
+    return () => window.clearInterval(interval);
+  }, [dispatch]);
 
   // Formatage de la date de dernière indexation
   const formattedDate = indexingStatus?.last_indexed_at
@@ -182,7 +147,6 @@ export default function Home() {
           <h3>
             {indexingStatus?.documents?.indexed ?? "—"}
           </h3>
-
           <span>Documents indexés</span>
         </div>
 
@@ -190,18 +154,21 @@ export default function Home() {
           <h3>
             {indexingStatus?.chunks ?? "—"}
           </h3>
-
-          <span>
-            Fragments de texte indexés
-          </span>
+          <span>Fragments de texte indexés</span>
         </div>
 
         <div className="stat-card">
           <h3>{formattedDate}</h3>
-
           <span>Dernière indexation</span>
         </div>
       </section>
+
+      {/* État de chargement */}
+      {statusLoading && (
+        <p role="status">
+          Chargement des statistiques d'indexation...
+        </p>
+      )}
 
       {/* Message d'erreur */}
       {statusError && (

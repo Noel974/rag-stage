@@ -16,25 +16,39 @@ async function request<T>(
 
   if (!response.ok) {
     const message = await response.text();
-    throw new Error(
-      message || `Erreur API : ${response.status}`
-    );
+    throw new Error(message || `Erreur API : ${response.status}`);
   }
 
   return response.json() as Promise<T>;
 }
 
-// À adapter à la structure réelle renvoyée par ton backend.
-export interface AskResponse {
-  answer: string;
-  sources?: Array<{
-    name?: string;
-    page?: number;
-    content?: string;
-  }>;
+// Extraits utilisés pour construire la réponse du RAG
+export interface AskSource {
+  n: number;
+  name: string;
+  link: string | null;
+  location: string | null;
+  score: number;
+  excerpt: string;
 }
 
-// Remplace ces champs par ceux de ton endpoint /status.
+// Document proposé à l'utilisateur
+export interface AskDocument {
+  drive_id: string;
+  name: string;
+  view_url: string | null;
+  download_url: string;
+}
+
+// Réponse complète de /api/ask
+export interface AskResponse {
+  answer?: string;
+  error?: string;
+  sources?: AskSource[];
+  documents?: AskDocument[];
+}
+
+// Statut de l'indexation
 export type IndexingStatus = Record<string, unknown>;
 
 export function askQuestion(

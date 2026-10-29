@@ -1,20 +1,25 @@
 
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-    askQuestion,
-    getIndexingStatus,
-    type AskResponse,
-    type IndexingStatus,
+  askQuestion,
+  getIndexingStatus,
+  type AskResponse,
+  type IndexingStatus,
 } from "../../services/api";
 
-// Appel du backend pour poser une question
 export const sendQuestion = createAsyncThunk<
   AskResponse,
   string,
   { rejectValue: string }
 >("rag/askQuestion", async (question, { rejectWithValue }) => {
   try {
-    return await askQuestion(question);
+    const response = await askQuestion(question);
+
+    if (response.error) {
+      return rejectWithValue(response.error);
+    }
+
+    return response;
   } catch (error) {
     return rejectWithValue(
       error instanceof Error ? error.message : "Erreur inconnue"
@@ -22,7 +27,6 @@ export const sendQuestion = createAsyncThunk<
   }
 });
 
-// Appel du backend pour connaître l'état de l'indexation
 export const fetchIndexingStatus = createAsyncThunk<
   IndexingStatus,
   void,
@@ -69,6 +73,7 @@ const ragSlice = createSlice({
       .addCase(sendQuestion.pending, (state) => {
         state.questionLoading = true;
         state.questionError = null;
+        state.answer = null;
       })
       .addCase(sendQuestion.fulfilled, (state, action) => {
         state.questionLoading = false;
