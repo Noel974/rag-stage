@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
+import { useLocation } from "react-router-dom";
 import remarkGfm from "remark-gfm";
 
 import { askQuestion } from "../services/api";

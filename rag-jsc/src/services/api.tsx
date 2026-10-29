@@ -1,29 +1,51 @@
-// src/services/api.ts
 
-const API_URL = "http://localhost:8000/api";
+const API_URL =
+  import.meta.env.VITE_API_URL ?? "http://localhost:8000/api";
 
-export async function askQuestion(question: string) {
-  const response = await fetch(`${API_URL}/ask`, {
-    method: "POST",
+async function request<T>(
+  path: string,
+  options?: RequestInit
+): Promise<T> {
+  const response = await fetch(`${API_URL}${path}`, {
+    ...options,
     headers: {
       "Content-Type": "application/json",
+      ...options?.headers,
     },
-    body: JSON.stringify({
-      question,
-    }),
   });
 
-  return response.json();
-}
- 
-
-export async function getIndexingStatus() {
-  const response = await fetch(`${API_URL}/status`);
-
   if (!response.ok) {
-    throw new Error("Impossible de récupérer le statut de l'indexation");
+    const message = await response.text();
+    throw new Error(
+      message || `Erreur API : ${response.status}`
+    );
   }
 
-  return response.json();
+  return response.json() as Promise<T>;
 }
 
+// À adapter à la structure réelle renvoyée par ton backend.
+export interface AskResponse {
+  answer: string;
+  sources?: Array<{
+    name?: string;
+    page?: number;
+    content?: string;
+  }>;
+}
+
+// Remplace ces champs par ceux de ton endpoint /status.
+export type IndexingStatus = Record<string, unknown>;
+
+export function askQuestion(
+  question: string
+): Promise<AskResponse> {
+  return request<AskResponse>("/ask", {
+    method: "POST",
+    body: JSON.stringify({ question }),
+  });
+}
+
+export function getIndexingStatus(): Promise<IndexingStatus> {
+  return request<IndexingStatus>("/status");
+}

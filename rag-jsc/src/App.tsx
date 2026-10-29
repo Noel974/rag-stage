@@ -5,8 +5,7 @@ import Navbar from './component/navbar'
 import Index from './router'
 
 function App() {
-
-
+  
   return (
     <>
       <BrowserRouter>
