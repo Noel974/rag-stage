@@ -10,7 +10,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <a href="#accueil" className="navbar-logo" onClick={closeMenu}>
-        MonSite<span>.</span>
+        <img src="/assets/logo.png" className="nav-logo" style={{height: "60px"}} />
       </a>
 
       <button
