@@ -1,0 +1,48 @@
+[
+  {
+    "id": "conge-01",
+    "question": "Quels types de congé peut-on demander avec le formulaire de demande de congé ?",
+    "reference": "Congés annuels, RTT ou récupération d'heures, congé sans solde, autorisation spéciale d'absence (événement familial, déménagement) ou un autre motif.",
+    "expected_docs": ["Demande de congé"]
+  },
+  {
+    "id": "conge-02",
+    "question": "Un arrêt maladie se demande-t-il avec le formulaire de congé ?",
+    "reference": "Non. Un arrêt maladie se transmet avec le certificat médical, dans les délais prévus par la structure.",
+    "expected_docs": ["Demande de congé"]
+  },
+  {
+    "id": "periscolaire-01",
+    "question": "Quels services peut-on demander dans le dossier périscolaire ?",
+    "reference": "L'accueil du matin, la restauration scolaire (cantine), l'accueil du soir (garderie) et l'étude surveillée.",
+    "expected_docs": ["Demande d'inscription au périscolaire"]
+  },
+  {
+    "id": "periscolaire-02",
+    "question": "Quelles pièces faut-il joindre au dossier périscolaire ?",
+    "reference": "Un justificatif de domicile, une attestation d'assurance, une attestation de quotient familial ou l'avis d'imposition, la copie des vaccinations obligatoires et, le cas échéant, la copie du PAI.",
+    "expected_docs": ["Demande d'inscription au périscolaire"]
+  },
+  {
+    "id": "intervention-01",
+    "question": "Quels types d'intervention peut-on demander dans une école ?",
+    "reference": "Maintenance du bâtiment, électricité, plomberie ou chauffage, mobilier ou équipement de classe, matériel informatique, sécurité, entretien ou propreté, intervenant extérieur, ou autre.",
+    "expected_docs": ["Demande d'intervention à l'école"]
+  },
+  {
+    "id": "mercredi-01",
+    "question": "Quelles activités sont proposées le mercredi ?",
+    "reference": "Sport et jeux collectifs, arts plastiques, théâtre et expression, musique, découverte scientifique, jeux de société, cuisine, nature et jardinage (exemples à adapter).",
+    "expected_docs": ["Inscription aux activités du mercredi"]
+  },
+  {
+    "id": "hors-sujet-01",
+    "question": "Quel est le budget annuel de la mairie ?",
+    "answerable": false
+  },
+  {
+    "id": "hors-sujet-02",
+    "question": "Quel est le tarif exact de la cantine ?",
+    "answerable": false
+  }
+]

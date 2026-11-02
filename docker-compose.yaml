@@ -120,3 +120,44 @@ services:
         condition: service_healthy
     networks:
       - RAG_kestra-net
+
+  ragas-evaluation:
+    build:
+      context: .
+      dockerfile: evaluation/Dockerfile
+    
+    image: rag-kestra-ragas-evaluation
+
+    container_name: rag_ragas_evaluation
+
+    profiles:
+    - evaluation
+
+    depends_on:
+      api:
+        condition: service_started
+      pgvector:
+        condition: service_healthy
+
+    environment:
+      DB_HOST: rag_pgvector
+      DB_PORT: "5432"
+      DB_NAME: rag
+      DB_USER: rag
+      DB_PASSWORD: "r4g_p4ss"
+
+      API_BASE_URL: "http://api:8000"
+
+      MISTRAL_API_KEY: ${MISTRAL_API_KEY}
+      MISTRAL_MODEL: open-mistral-7b
+
+    volumes:
+      - ./evaluation/results:/app/results
+      - ./evaluation/dataset.json:/app/dataset.json
+
+    networks:
+      - RAG_kestra-net
+
+    restart: "no"
+  
+  

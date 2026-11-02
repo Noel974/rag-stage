@@ -8,7 +8,7 @@ export default function Footer() {
         {/* Logo et description */}
         <div className="footer-brand">
           <a href="#accueil" className="footer-logo">
-            MonSite<span>.</span>
+             <img src="/assets/logo.png" className="nav-logo" style={{height: "100px"}} />
           </a>
 
           <p>
@@ -33,8 +33,8 @@ export default function Footer() {
         <div className="footer-column">
           <h3>Navigation</h3>
           <ul>
-            <li><a href="#accueil">Accueil</a></li>
-            <li><a href="#apropos">À propos</a></li>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/apropos">À propos</a></li>
             <li><a href="#services">Services</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
@@ -64,12 +64,12 @@ export default function Footer() {
       {/* Bas du footer */}
       <div className="footer-bottom">
         <p>
-          © {new Date().getFullYear()} MonSite.
+          © {new Date().getFullYear()}JSC Assistant IA
           Tous droits réservés.
         </p>
 
         <div className="footer-legal">
-          <a href="#mentions-legales">Mentions légales</a>
+          <a href="/mentions-legales">Mentions légales</a>
           <a href="#confidentialite">Confidentialité</a>
         </div>
       </div>

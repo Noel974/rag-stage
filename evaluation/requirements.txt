@@ -1,0 +1,11 @@
+ragas
+langchain-huggingface
+langchain-mistralai
+sentence-transformers
+numpy
+flask
+flask-cors
+gunicorn
+requests
+psycopg2-binary
+pgvector

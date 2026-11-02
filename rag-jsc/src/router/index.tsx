@@ -4,6 +4,7 @@ import Annuaire from "../pages/annuaire";
 import Apropos from "../pages/apropos";
 import AssistantIA from "../pages/assitance";
 import Home from "../pages/home";
+import MentionsLegales from "../pages/mentionlegal";
 
 const Index: React.FC = () => {
     return ( 
@@ -12,6 +13,7 @@ const Index: React.FC = () => {
             <Route path="/annuaire" element={<Annuaire />} />
             <Route path="/apropos" element={<Apropos />} />
             <Route path="/assitance" element={<AssistantIA />} />
+            <Route path="/mentions-legales" element={<MentionsLegales />} />
         </Routes>
     );
 };
