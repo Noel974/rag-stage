@@ -10,6 +10,12 @@ from flask_cors import CORS
 from psycopg2.pool import ThreadedConnectionPool
 from sentence_transformers import SentenceTransformer
 
+from pathlib import Path
+import json
+import uuid
+import subprocess
+import psutil
+
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("rag-api")
 
@@ -607,3 +613,283 @@ def get_document_chunks(drive_id):
             for r in rows
         ],
     })
+
+
+# ============================================================
+# SYSTEM METRICS API
+# ============================================================
+
+@app.get("/api/metrics")
+def get_system_metrics():
+    """
+    Collecte les métriques système et PostgreSQL,
+    les enregistre dans system_metrics et retourne les données.
+    """
+
+    try:
+        # 1. Métriques CPU et RAM
+        cpu_percent = psutil.cpu_percent(interval=0.5)
+        memory_percent = psutil.virtual_memory().percent
+
+        with db() as conn, conn.cursor() as cur:
+
+            # 2. Nombre de documents indexés
+            cur.execute("""
+                SELECT COUNT(*)
+                FROM documents
+                WHERE status = 'indexed'
+            """)
+            documents_count = cur.fetchone()[0]
+
+            # 3. Nombre total de chunks
+            cur.execute("""
+                SELECT COUNT(*)
+                FROM chunks
+            """)
+            chunks_count = cur.fetchone()[0]
+
+            # 4. Taille des vecteurs pgvector
+            cur.execute("""
+                SELECT COALESCE(
+                    SUM(pg_column_size(embedding)),
+                    0
+                ) / 1024.0 / 1024.0
+                FROM chunks
+                WHERE embedding IS NOT NULL
+            """)
+            pgvector_size_mb = float(cur.fetchone()[0])
+
+            # 5. Enregistrement des métriques
+            cur.execute("""
+                INSERT INTO system_metrics (
+                    cpu_percent,
+                    memory_percent,
+                    pgvector_size_mb,
+                    documents_count,
+                    chunks_count
+                )
+                VALUES (%s, %s, %s, %s, %s)
+                RETURNING id, created_at
+            """, (
+                cpu_percent,
+                memory_percent,
+                pgvector_size_mb,
+                documents_count,
+                chunks_count
+            ))
+
+            row = cur.fetchone()
+
+        return jsonify({
+            "id": row[0],
+            "created_at": row[1].isoformat(),
+            "cpu_percent": cpu_percent,
+            "memory_percent": memory_percent,
+            "pgvector_size_mb": round(pgvector_size_mb, 2),
+            "documents_count": documents_count,
+            "chunks_count": chunks_count
+        })
+
+    except Exception:
+        log.exception("Erreur lors de la collecte des métriques système")
+
+        return jsonify({
+            "error": "Impossible de récupérer les métriques système."
+        }), 500
+
+
+@app.get("/api/metrics/history")
+def get_metrics_history():
+
+    limit = int_param("limit", 100, 1, 1000)
+
+    with db() as conn, conn.cursor() as cur:
+
+        cur.execute("""
+            SELECT
+                id,
+                created_at,
+                cpu_percent,
+                memory_percent,
+                pgvector_size_mb,
+                documents_count,
+                chunks_count
+            FROM system_metrics
+            ORDER BY created_at DESC
+            LIMIT %s
+        """, (limit,))
+
+        rows = cur.fetchall()
+
+    return jsonify({
+        "total": len(rows),
+        "metrics": [
+            {
+                "id": r[0],
+                "created_at": r[1].isoformat(),
+                "cpu_percent": float(r[2]) if r[2] is not None else None,
+                "memory_percent": float(r[3]) if r[3] is not None else None,
+                "pgvector_size_mb": float(r[4]) if r[4] is not None else None,
+                "documents_count": r[5],
+                "chunks_count": r[6]
+            }
+            for r in rows
+        ]
+    })
+
+
+
+# ============================================================
+# RAGAS EVALUATION API
+# ============================================================
+
+RAGAS_RESULTS_DIR = Path(
+    os.environ.get(
+        "RAGAS_RESULTS_DIR",
+        "/app/evaluation/results"
+    )
+)
+
+RAGAS_DATASET_PATH = Path(
+    os.environ.get(
+        "RAGAS_DATASET_PATH",
+        "/app/evaluation/dataset.json"
+    )
+)
+
+
+@app.get("/api/evaluations")
+def list_evaluations():
+
+    RAGAS_RESULTS_DIR.mkdir(
+        parents=True,
+        exist_ok=True
+    )
+
+    evaluations = []
+
+    for file in sorted(
+        RAGAS_RESULTS_DIR.glob("*.json"),
+        key=lambda f: f.stat().st_mtime,
+        reverse=True
+    ):
+
+        evaluations.append({
+            "id": file.stem,
+            "filename": file.name,
+            "created_at": file.stat().st_mtime
+        })
+
+    return jsonify({
+        "total": len(evaluations),
+        "evaluations": evaluations
+    })
+
+
+# ==========================================
+# RAGAS : Détail d'une évaluation
+# ==========================================
+
+@app.get("/api/evaluations/<evaluation_id>")
+def get_evaluation(evaluation_id):
+
+    # Autoriser les lettres, chiffres, tirets et underscores
+    # Important : tes identifiants contiennent des underscores !
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", evaluation_id):
+        return jsonify({
+            "error": "Identifiant invalide"
+        }), 400
+
+    file = RAGAS_RESULTS_DIR / f"{evaluation_id}.json"
+
+    if not file.is_file():
+        return jsonify({
+            "error": "Evaluation introuvable"
+        }), 404
+
+    try:
+        with file.open("r", encoding="utf-8") as f:
+            result = json.load(f)
+
+        return jsonify(result)
+
+    except json.JSONDecodeError:
+        return jsonify({
+            "error": "Fichier de résultat invalide"
+        }), 500
+
+    except OSError:
+        return jsonify({
+            "error": "Impossible de lire le fichier"
+        }), 500
+
+
+# ==========================================
+# RAGAS : Dataset
+# ==========================================
+
+@app.get("/api/evaluations/dataset")
+def get_evaluation_dataset():
+
+    if not RAGAS_DATASET_PATH.is_file():
+        return jsonify({
+            "error": "Dataset introuvable"
+        }), 404
+
+    try:
+        with RAGAS_DATASET_PATH.open(
+            "r",
+            encoding="utf-8"
+        ) as f:
+            dataset = json.load(f)
+
+        return jsonify(dataset)
+
+    except (json.JSONDecodeError, OSError):
+        return jsonify({
+            "error": "Impossible de lire le dataset"
+        }), 500
+
+
+# ==========================================
+# RAGAS : Toutes les métriques
+# ==========================================
+
+@app.get("/api/evaluations/metrics")
+def get_evaluation_metrics():
+
+    files = list(RAGAS_RESULTS_DIR.glob("*.json"))
+
+    results = []
+
+    for file in files:
+
+        try:
+            with file.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            results.append({
+                "id": file.stem,
+                "filename": file.name,
+                "metrics": data
+            })
+
+        except (json.JSONDecodeError, OSError):
+            log.warning(
+                "Résultat RAGAS illisible : %s",
+                file.name
+            )
+
+    return jsonify({
+        "total": len(results),
+        "results": results
+    })
+
+if __name__ == "__main__":
+    print(app.url_map)
+
+    app.run(
+        host="0.0.0.0",
+        port=8000,
+        debug=True
+    )

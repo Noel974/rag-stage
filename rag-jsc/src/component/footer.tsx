@@ -70,7 +70,7 @@ export default function Footer() {
 
         <div className="footer-legal">
           <a href="/mentions-legales">Mentions légales</a>
-          <a href="#confidentialite">Confidentialité</a>
+          <a href="/ragas">Confidentialité</a>
         </div>
       </div>
     </footer>

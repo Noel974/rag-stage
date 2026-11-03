@@ -3,7 +3,7 @@
 FROM rag-ingest:latest
 
 WORKDIR /app
-RUN pip install --no-cache-dir --retries 5 flask flask-cors gunicorn requests
+RUN pip install --no-cache-dir --retries 5 flask flask-cors gunicorn requests uvicorn pydantic psutil
 COPY app.py .
 
 EXPOSE 8000

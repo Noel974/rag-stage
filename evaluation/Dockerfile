@@ -6,20 +6,22 @@ WORKDIR /app
 
 # Installation des dépendances
 RUN pip install --no-cache-dir \
-    ragas \
-    langchain-core \
+    ragas==0.4.3 \
+    langchain-core==1.7.3 \
+    langchain-community==0.4.2 \
+    langchain-mistralai==1.1.6 \
     langchain-huggingface \
-    langchain-mistralai \
     sentence-transformers \
     numpy \
     flask \
+    psutil \
     flask-cors \
     gunicorn \
     requests \
     python-dotenv \
     psycopg2-binary \
     pgvector
-
+    
 # Vérification de psycopg2
 RUN python -c "import psycopg2; from psycopg2.extras import Json, execute_values; print('PSYCOPG2 OK:', psycopg2.__version__)"
 

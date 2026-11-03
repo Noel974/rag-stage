@@ -5,6 +5,7 @@ import Apropos from "../pages/apropos";
 import AssistantIA from "../pages/assitance";
 import Home from "../pages/home";
 import MentionsLegales from "../pages/mentionlegal";
+import RagasDashboard from "../pages/ragas";
 
 const Index: React.FC = () => {
     return ( 
@@ -14,6 +15,7 @@ const Index: React.FC = () => {
             <Route path="/apropos" element={<Apropos />} />
             <Route path="/assitance" element={<AssistantIA />} />
             <Route path="/mentions-legales" element={<MentionsLegales />} />
+            <Route path="/ragas" element={<RagasDashboard />} />
         </Routes>
     );
 };

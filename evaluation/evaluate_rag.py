@@ -57,23 +57,39 @@ HERE = Path(__file__).resolve().parent
 # ---------------------------------------------------------------------------
 
 def import_app():
-    """Importe app.py (charge le modèle d'embedding et ouvre le pool de connexions)."""
+    """Importe app.py depuis le projet API, en local ou dans le conteneur Docker."""
     if not os.environ.get("DB_PASSWORD"):
         sys.exit(
-            "DB_PASSWORD est manquant. En local, définir aussi DB_HOST=localhost et DB_PORT=5433 "
+            "DB_PASSWORD est manquant. En local, définir DB_HOST=localhost et DB_PORT=5433 "
             "(base publiée par Docker Compose), ainsi que MISTRAL_API_KEY."
         )
-    for base in (HERE, HERE / "api", HERE.parent / "api"):
-        if (base / "app.py").exists():
-            sys.path.insert(0, str(base))
-            break
-    else:
-        sys.exit("app.py introuvable : placer evaluate_rag.py à côté d'app.py, ou dans un dossier voisin de api/.")
-    import app as rag_app  # noqa: WPS433 : même code que l'API
 
-    required = ("search", "build_messages", "call_mistral", "clean_content", "location",
-                "db", "model", "MISTRAL_MODEL", "DEFAULT_TOP_K", "RateLimited")
-    missing = [n for n in required if not hasattr(rag_app, n)]
+    candidates = (
+        HERE / "app.py",
+        HERE / "api" / "app.py",
+        Path("/app/app.py"),  # montage Docker éventuel, prioritaire sur la copie buildée
+        HERE.parent / "api" / "app.py",
+        Path("/app/api/app.py"),
+    )
+    app_path = next((candidate.resolve() for candidate in candidates if candidate.is_file()), None)
+    if app_path is None:
+        locations = ", ".join(str(p) for p in candidates)
+        sys.exit(f"app.py introuvable. Emplacements vérifiés : {locations}")
+
+    app_dir = str(app_path.parent)
+    if app_dir in sys.path:
+        sys.path.remove(app_dir)
+    sys.path.insert(0, app_dir)
+
+    # Évite de réutiliser un module app provenant d'un autre emplacement.
+    sys.modules.pop("app", None)
+    import app as rag_app  # noqa: WPS433
+
+    required = (
+        "search", "build_messages", "call_mistral", "clean_content", "location",
+        "db", "model", "MISTRAL_MODEL", "DEFAULT_TOP_K", "RateLimited",
+    )
+    missing = [name for name in required if not hasattr(rag_app, name)]
     if missing:
         sys.exit(f"app.py ne fournit plus : {', '.join(missing)}. Adapter evaluate_rag.py.")
     return rag_app
@@ -90,23 +106,55 @@ def norm(text):
 
 
 def load_dataset(path: Path):
-    data = json.loads(path.read_text(encoding="utf-8"))
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        sys.exit(f"JSON invalide dans {path} (ligne {exc.lineno}, colonne {exc.colno}) : {exc.msg}")
+    except OSError as exc:
+        sys.exit(f"Impossible de lire le dataset {path} : {exc}")
+
     if not isinstance(data, list) or not data:
         sys.exit(f"{path} doit contenir une liste non vide de questions.")
+
     items = []
+    seen_ids = set()
     for i, raw in enumerate(data, 1):
-        question = (raw.get("question") or "").strip()
+        if not isinstance(raw, dict):
+            sys.exit(f"L'élément {i} de {path} doit être un objet JSON.")
+        question = str(raw.get("question") or "").strip()
         if not question:
             sys.exit(f"Question vide à l'indice {i} de {path}.")
+
+        item_id = str(raw.get("id") or f"q{i:02d}").strip()
+        if item_id in seen_ids:
+            sys.exit(f"ID de question dupliqué dans {path} : {item_id}")
+        seen_ids.add(item_id)
+
+        expected_docs = raw.get("expected_docs") or []
+        if isinstance(expected_docs, str):
+            expected_docs = [expected_docs]
+        if not isinstance(expected_docs, list):
+            sys.exit(f"expected_docs doit être une liste (question {item_id}).")
+
+        drive_ids = raw.get("drive_ids") or None
+        if isinstance(drive_ids, str):
+            drive_ids = [drive_ids]
+        if drive_ids is not None and not isinstance(drive_ids, list):
+            sys.exit(f"drive_ids doit être une liste ou null (question {item_id}).")
+        answerable = raw.get("answerable", True)
+        if not isinstance(answerable, bool):
+            sys.exit(f"answerable doit être true ou false (question {item_id}).")
+
         items.append({
-            "id": str(raw.get("id") or f"q{i:02d}"),
+            "id": item_id,
             "question": question,
-            "reference": (raw.get("reference") or "").strip(),
-            "expected_docs": list(raw.get("expected_docs") or []),
-            "answerable": bool(raw.get("answerable", True)),
-            "drive_ids": raw.get("drive_ids") or None,
+            "reference": str(raw.get("reference") or "").strip(),
+            "expected_docs": [str(value) for value in expected_docs],
+            "answerable": answerable,
+            "drive_ids": [str(value) for value in drive_ids] if drive_ids is not None else None,
         })
     return items
+
 
 
 def doc_matches(hit, expected):
@@ -138,7 +186,13 @@ def run_question(rag_app, item, k, retrieval_only):
         "answerable": item["answerable"], "expected_docs": item["expected_docs"],
         "answer": None, "contexts": [], "retrieved": [], "hit": None, "rr": None,
         "abstained": None, "latency_ms": None, "search_ms": None, "generation_ms": None,
-        "error": None, "ragas": {},
+        "error": None,
+"ragas": {
+    "faithfulness": None,
+    "answer_relevancy": None,
+    "context_precision": None,
+    "context_recall": None,
+},
     }
     started = time.perf_counter()
 
@@ -152,12 +206,18 @@ def run_question(rag_app, item, k, retrieval_only):
         return res
 
     res["retrieved"] = [
-        {"name": h["name"], "drive_id": h["drive_id"], "score": h["score"],
-         "location": rag_app.location(h["metadata"])}
+        {
+            "name": h.get("name"),
+            "drive_id": h.get("drive_id"),
+            "score": h.get("score"),
+            "location": rag_app.location(h.get("metadata") or {}),
+        }
         for h in hits
     ]
-    # Les extraits évalués sont ceux que le modèle voit réellement dans le prompt
-    res["contexts"] = [rag_app.clean_content(h["content"]) for h in hits]
+    # Les extraits évalués sont ceux que le modèle voit réellement dans le prompt.
+    res["contexts"] = [
+        rag_app.clean_content(h.get("content") or "") for h in hits
+    ]
 
     if item["answerable"] and item["expected_docs"]:
         rank = next((i for i, h in enumerate(hits, 1) if doc_matches(h, item["expected_docs"])), None)
@@ -178,6 +238,8 @@ def run_question(rag_app, item, k, retrieval_only):
             res["error"] = "génération : limite de débit Mistral (429)"
         except requests.RequestException as exc:
             res["error"] = f"génération : {exc}"
+        except Exception as exc:  # noqa: BLE001
+            res["error"] = f"génération : {type(exc).__name__}: {exc}"
         res["generation_ms"] = ms(t)
 
     if res["answer"] is not None and not item["answerable"]:
@@ -191,8 +253,16 @@ def run_question(rag_app, item, k, retrieval_only):
 # ---------------------------------------------------------------------------
 
 def map_ragas_column(name):
-    for key, target in (("faithfulness", "faithfulness"), ("relevancy", "answer_relevancy"),
-                        ("precision", "context_precision"), ("recall", "context_recall")):
+    name = str(name).lower()
+    for key, target in (
+        ("faithfulness", "faithfulness"),
+        ("answer_relevancy", "answer_relevancy"),
+        ("relevancy", "answer_relevancy"),
+        ("context_precision", "context_precision"),
+        ("precision", "context_precision"),
+        ("context_recall", "context_recall"),
+        ("recall", "context_recall"),
+    ):
         if key in name:
             return target
     return None
@@ -212,16 +282,22 @@ def run_ragas(rag_app, results, judge_model, workers, timeout, retries):
     class AppEmbeddings(Embeddings):
         """Utilise le modèle d'embedding déjà chargé par app.py (aucun téléchargement)."""
 
-        def _encode(self, texts):
-            vecs = rag_app.model.encode(["query: " + t for t in texts], normalize_embeddings=True,
-                                        show_progress_bar=False)
+        def _encode(self, texts, prefix):
+            prepared = [prefix + str(text) for text in texts]
+            vecs = rag_app.model.encode(
+                prepared,
+                normalize_embeddings=True,
+                show_progress_bar=False,
+            )
             return vecs.tolist()
 
         def embed_documents(self, texts):
-            return self._encode(texts)
+            # E5 attend le préfixe passage: pour les textes de documents.
+            return self._encode(texts, "passage: ")
 
         def embed_query(self, text):
-            return self._encode([text])[0]
+            # E5 attend le préfixe query: pour les questions.
+            return self._encode([text], "query: ")[0]
 
     todo = []
     for r in results:
@@ -243,18 +319,46 @@ def run_ragas(rag_app, results, judge_model, workers, timeout, retries):
     ]
     chat = ChatMistralAI(model=judge_model, mistral_api_key=os.environ["MISTRAL_API_KEY"],
                          temperature=0, max_retries=retries)
+    r
     result = evaluate(
         dataset=EvaluationDataset(samples=samples),
-        metrics=[Faithfulness(), ResponseRelevancy(), LLMContextPrecisionWithReference(),
-                 LLMContextRecall()],
+        metrics=[
+            Faithfulness(),
+            ResponseRelevancy(),
+            LLMContextPrecisionWithReference(),
+            LLMContextRecall()
+        ],
         llm=LangchainLLMWrapper(chat),
         embeddings=LangchainEmbeddingsWrapper(AppEmbeddings()),
-        run_config=RunConfig(max_workers=workers, timeout=timeout, max_retries=retries, max_wait=60),
+        run_config=RunConfig(
+            max_workers=workers,
+            timeout=timeout,
+            max_retries=retries,
+            max_wait=60
+        ),
         raise_exceptions=False,
         show_progress=True,
     )
+
+    # Conversion des résultats RAGAS
     df = result.to_pandas()
-    columns = {c: map_ragas_column(c) for c in df.columns if map_ragas_column(c)}
+
+    # DEBUG
+    print("\n========== DEBUG RAGAS ==========")
+    print("Colonnes disponibles :", df.columns.tolist())
+    print("\nRésultats complets :")
+    print(df.to_string())
+    print("\nTypes des colonnes :")
+    print(df.dtypes)
+    print("=================================\n")
+
+    # Mapping des colonnes
+    columns = {
+        c: map_ragas_column(c)
+        for c in df.columns
+        if map_ragas_column(c)
+    }
+
     for pos, r in enumerate(todo):
         for col, target in columns.items():
             value = df.iloc[pos][col]
@@ -262,15 +366,27 @@ def run_ragas(rag_app, results, judge_model, workers, timeout, retries):
                 value = float(value)
             except (TypeError, ValueError):
                 value = None
-            r["ragas"][target] = None if value is None or math.isnan(value) else round(value, 4)
 
+            r["ragas"][target] = (
+                None if value is None or not math.isfinite(value)
+                else round(value, 4)
+            )
 
 # ---------------------------------------------------------------------------
 # Agrégats, rapport, base de données
 # ---------------------------------------------------------------------------
 
 def mean(values):
-    vals = [v for v in values if v is not None and not (isinstance(v, float) and math.isnan(v))]
+    vals = []
+    for value in values:
+        if value is None:
+            continue
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            continue
+        if math.isfinite(number):
+            vals.append(number)
     return round(sum(vals) / len(vals), 4) if vals else None
 
 
@@ -388,7 +504,8 @@ def print_summary(agg, results, mode):
 
 def parse_args():
     p = argparse.ArgumentParser(description="Évaluation du RAG (retrieval + RAGAS)")
-    p.add_argument("--dataset", default=str(HERE / "dataset.json"), help="jeu de test JSON")
+    default_dataset = os.environ.get("RAGAS_DATASET_PATH") or str(HERE / "dataset.json")
+    p.add_argument("--dataset", default=default_dataset, help="jeu de test JSON")
     p.add_argument("--label", default="run", help="nom de l'exécution (ex. baseline, chunks-1000)")
     p.add_argument("--note", default="", help="description du changement testé")
     p.add_argument("--top-k", type=int, default=None, help="nombre d'extraits (défaut : TOP_K d'app.py)")
@@ -401,26 +518,58 @@ def parse_args():
     p.add_argument("--workers", type=int, default=1, help="appels simultanés du juge RAGAS")
     p.add_argument("--timeout", type=int, default=180, help="délai maximal par appel du juge (s)")
     p.add_argument("--retries", type=int, default=6, help="tentatives en cas d'erreur 429")
-    p.add_argument("--report-dir", default=str(HERE / "reports"))
-    return p.parse_args()
+    default_report_dir = (
+        os.environ.get("RAGAS_RESULTS_DIR")
+        or os.environ.get("RAGAS_RESULS_DIR")  # compatibilité avec l'ancien nom dans compose
+        or str(HERE / "results")
+    )
+    p.add_argument("--report-dir", default=default_report_dir,
+                   help="Dossier de sauvegarde des résultats JSON")
+    args = p.parse_args()
+
+    if args.top_k is not None and args.top_k < 1:
+        p.error("--top-k doit être supérieur ou égal à 1")
+    if args.limit is not None and args.limit < 1:
+        p.error("--limit doit être supérieur ou égal à 1")
+    if args.sleep < 0:
+        p.error("--sleep ne peut pas être négatif")
+    if args.workers < 1:
+        p.error("--workers doit être supérieur ou égal à 1")
+    if args.timeout < 1:
+        p.error("--timeout doit être supérieur ou égal à 1")
+    if args.retries < 0:
+        p.error("--retries ne peut pas être négatif")
+    if args.retrieval_only and args.no_ragas:
+        p.error("--retrieval-only et --no-ragas ne peuvent pas être utilisés ensemble")
+    return args
+
 
 
 def main():
     args = parse_args()
-    dataset_path = Path(args.dataset)
-    if not dataset_path.exists():
+    dataset_path = Path(args.dataset).expanduser().resolve()
+    # Compatibilité avec le montage Docker ./evaluation/dataset.json -> /app/dataset.json.
+    if not dataset_path.is_file() and Path("/app/dataset.json").is_file():
+        dataset_path = Path("/app/dataset.json")
+    if not dataset_path.is_file():
         sys.exit(f"Jeu de test introuvable : {dataset_path} (voir dataset.example.json)")
+
     items = load_dataset(dataset_path)
-    if args.limit:
-        items = items[: args.limit]
+    if args.limit is not None:
+        items = items[:args.limit]
+    if not items:
+        sys.exit("Aucune question à évaluer après application de --limit.")
 
     mode = "retrieval_only" if args.retrieval_only else ("no_ragas" if args.no_ragas else "full")
     rag_app = import_app()
-    k = args.top_k or rag_app.DEFAULT_TOP_K
+    k = args.top_k if args.top_k is not None else rag_app.DEFAULT_TOP_K
     judge = args.judge_model or rag_app.MISTRAL_MODEL
+
     if mode == "full" and judge == rag_app.MISTRAL_MODEL:
-        print("Attention : le juge est le même modèle que celui qui génère les réponses "
-              "(auto-évaluation, biaisée). Définir --judge-model ou JUDGE_MODEL.")
+        print(
+            "Attention : le juge est le même modèle que celui qui génère les réponses "
+            "(auto-évaluation potentiellement biaisée). Définir --judge-model ou JUDGE_MODEL."
+        )
 
     started_at = datetime.now(timezone.utc)
     t_run = time.perf_counter()
@@ -428,42 +577,137 @@ def main():
     for i, item in enumerate(items, 1):
         print(f"[{i}/{len(items)}] {item['question'][:80]}")
         results.append(run_question(rag_app, item, k, args.retrieval_only))
-        if not args.retrieval_only and i < len(items):
+        if not args.retrieval_only and i < len(items) and args.sleep:
             time.sleep(args.sleep)
 
+    ragas_error = None
     if mode == "full":
-        run_ragas(rag_app, results, judge, args.workers, args.timeout, args.retries)
+        try:
+            run_ragas(rag_app, results, judge, args.workers, args.timeout, args.retries)
+        except Exception as exc:  # noqa: BLE001 : conserver les résultats même si RAGAS échoue
+            ragas_error = f"{type(exc).__name__}: {exc}"
+            print(f"\nERREUR RAGAS : {ragas_error}")
+            print("Les réponses et résultats de recherche seront tout de même sauvegardés.")
 
     duration = time.perf_counter() - t_run
     agg = aggregate(results)
     config = {
-        "generation_model": rag_app.MISTRAL_MODEL, "judge_model": judge if mode == "full" else None,
-        "top_k": k, "embedding_model": EMBEDDING_MODEL, "mode": mode, "note": args.note,
+        "generation_model": rag_app.MISTRAL_MODEL,
+        "judge_model": judge if mode == "full" else None,
+        "top_k": k,
+        "embedding_model": EMBEDDING_MODEL,
+        "mode": mode,
+        "note": args.note,
         "dataset_set": dataset_path.name,
         "dataset_set_sha": hashlib.sha1(dataset_path.read_bytes()).hexdigest()[:10],
-        "git_commit": git_commit(), "corpus": corpus_state(rag_app),
-        "chunk_chars": os.environ.get("CHUNK_CHARS"), "rows_per_chunk": os.environ.get("ROWS_PER_CHUNK"),
+        "git_commit": git_commit(),
+        "corpus": corpus_state(rag_app),
+        "chunk_chars": os.environ.get("CHUNK_CHARS"),
+        "rows_per_chunk": os.environ.get("ROWS_PER_CHUNK"),
+        "ragas_error": ragas_error,
     }
     print_summary(agg, results, mode)
 
-    report_dir = Path(args.report_dir)
-    report_dir.mkdir(parents=True, exist_ok=True)
-    stamp = started_at.strftime("%Y%m%d_%H%M%S")
-    report = report_dir / f"run_{stamp}_{args.label}.json"
-    report.write_text(json.dumps({"label": args.label, "started_at": started_at.isoformat(),
-                                  "config": config, "aggregate": agg, "results": results},
-                                 ensure_ascii=False, indent=2, default=str), encoding="utf-8")
-    print(f"\nRapport : {report}")
+    report_path = None
+    report_dir = args.report_dir
+    # Le compose monte le volume de résultats sur /app/results.
+    if str(report_dir).rstrip("/") == "/app/evaluation/results" and Path("/app/results").is_dir():
+        report_dir = "/app/results"
+    try:
+        report_path = save_report(report_dir, started_at, args.label, config, agg, results)
+    except Exception:
+        # save_report affiche déjà le détail; on poursuit pour tenter l'écriture SQL.
+        pass
 
     if not args.no_db:
         try:
             run_id = save_to_db(rag_app, started_at, duration, args.label, mode, config, agg, results)
             print(f"Enregistré en base : eval_runs.id = {run_id}")
         except Exception as exc:  # noqa: BLE001
-            print(f"Écriture en base impossible ({exc}). Les tables eval_* existent-elles ? "
-                  "Exécuter sql/eval.sql. Le rapport JSON a été conservé.")
+            print(
+                f"Écriture en base impossible ({type(exc).__name__}: {exc}). "
+                "Vérifier les tables eval_runs/eval_results et la connexion PostgreSQL."
+            )
+            if report_path:
+                print(f"Le rapport JSON a été conservé : {report_path}")
             return 2
-    return 0 if agg["errors"] < agg["n_questions"] else 1
+
+    if agg["errors"] >= agg["n_questions"]:
+        return 1
+    if ragas_error:
+        return 3
+    return 0
+
+
+def save_report(report_dir, started_at, label, config, agg, results):
+    """Sauvegarde le rapport JSON et vérifie son existence."""
+
+    try:
+        # Résolution du chemin absolu
+        report_dir = Path(report_dir).expanduser().resolve()
+
+        # Création du dossier
+        report_dir.mkdir(parents=True, exist_ok=True)
+
+        # Vérification des permissions
+        if not report_dir.is_dir():
+            raise NotADirectoryError(
+                f"Le chemin {report_dir} n'est pas un dossier."
+            )
+
+        # Nom unique du fichier
+        stamp = started_at.strftime("%Y%m%d_%H%M%S_%f")
+        safe_label = "".join(
+            c if c.isalnum() or c in "-_" else "_"
+            for c in label
+        )
+
+        report = report_dir / f"run_{stamp}_{safe_label}.json"
+
+        # Construction du rapport
+        payload = {
+            "label": label,
+            "started_at": started_at.isoformat(),
+            "config": config,
+            "aggregate": agg,
+            "results": results,
+        }
+
+        # Écriture dans un fichier temporaire puis remplacement
+        temp_report = report.with_suffix(".json.tmp")
+
+        temp_report.write_text(
+            json.dumps(
+                payload,
+                ensure_ascii=False,
+                indent=2,
+                default=str,
+            ),
+            encoding="utf-8",
+        )
+
+        temp_report.replace(report)
+
+        # Vérification réelle
+        if not report.exists() or report.stat().st_size == 0:
+            raise IOError("Le rapport JSON n'a pas été correctement créé.")
+
+        print("\n" + "=" * 60)
+        print("SAUVEGARDE DU RAPPORT RÉUSSIE")
+        print("=" * 60)
+        print(f"Dossier : {report_dir}")
+        print(f"Fichier : {report.name}")
+        print(f"Taille  : {report.stat().st_size} octets")
+        print(f"Chemin  : {report}")
+
+        return report
+
+    except Exception as exc:
+        print("\nERREUR DE SAUVEGARDE DU RAPPORT")
+        print(f"Type : {type(exc).__name__}")
+        print(f"Détail : {exc}")
+        raise
+
 
 
 if __name__ == "__main__":

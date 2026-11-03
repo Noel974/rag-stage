@@ -3,8 +3,8 @@ FROM python:3.12-slim
 # PyTorch version CPU (beaucoup plus léger que la version GPU)
 RUN pip install --no-cache-dir --retries 5 torch --index-url https://download.pytorch.org/whl/cpu
 
-RUN pip install --no-cache-dir --retries 5 \
-    langchain-huggingface langchain-mistralai sentence-transformers \
+RUN pip install --no-cache-dir --retries 5 \ 
+    langchain-huggingface langchain-mistralai sentence-transformers psutil \
     google-api-python-client google-auth psycopg2-binary pgvector
 
 # Le modèle est téléchargé au build, pas à chaque exécution

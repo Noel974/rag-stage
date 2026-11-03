@@ -92,3 +92,64 @@ CREATE TABLE IF NOT EXISTS ingestion_runs (
 );
 
 CREATE INDEX IF NOT EXISTS ingestion_runs_started_idx ON ingestion_runs (started_at);
+
+-- Tables de suivi de l'évaluation du RAG (alimentées par evaluate_rag.py)
+
+CREATE TABLE IF NOT EXISTS eval_runs (
+  id                BIGSERIAL PRIMARY KEY,
+  started_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+  label             TEXT,
+  mode              TEXT,                      -- full | no_ragas | retrieval_only
+  config            JSONB NOT NULL DEFAULT '{}'::jsonb,   -- modèles, top_k, corpus, commit git...
+  n_questions       INTEGER,
+  n_answerable      INTEGER,
+  hit_rate          NUMERIC(5, 4),             -- bon document retrouvé
+  mrr               NUMERIC(5, 4),
+  abstention_rate   NUMERIC(5, 4),             -- questions sans réponse correctement refusées
+  faithfulness      NUMERIC(5, 4),
+  answer_relevancy  NUMERIC(5, 4),
+  context_precision NUMERIC(5, 4),
+  context_recall    NUMERIC(5, 4),
+  avg_latency_ms    INTEGER,
+  errors            INTEGER,
+  duration_s        NUMERIC(10, 2)
+);
+
+CREATE TABLE IF NOT EXISTS eval_results (
+  id                BIGSERIAL PRIMARY KEY,
+  run_id            BIGINT NOT NULL REFERENCES eval_runs(id) ON DELETE CASCADE,
+  question_id       TEXT,
+  question          TEXT NOT NULL,
+  reference         TEXT,
+  answerable        BOOLEAN DEFAULT TRUE,
+  answer            TEXT,
+  contexts          JSONB,
+  retrieved         JSONB,
+  expected_docs     JSONB,
+  hit               BOOLEAN,
+  rr                NUMERIC(5, 4),
+  abstained         BOOLEAN,
+  faithfulness      NUMERIC(5, 4),
+  answer_relevancy  NUMERIC(5, 4),
+  context_precision NUMERIC(5, 4),
+  context_recall    NUMERIC(5, 4),
+  latency_ms        INTEGER,
+  error             TEXT
+);
+
+CREATE INDEX IF NOT EXISTS eval_runs_started_idx ON eval_runs (started_at);
+CREATE INDEX IF NOT EXISTS eval_results_run_idx ON eval_results (run_id);
+
+CREATE TABLE IF NOT EXISTS system_metrics (
+  id               BIGSERIAL PRIMARY KEY,
+  created_at       TIMESTAMPTZ NOT NULL DEFAULT now(),
+  cpu_percent      NUMERIC(5, 2),
+  memory_percent   NUMERIC(5, 2),
+
+  pgvector_size_mb  NUMERIC(10, 2),
+
+  documents_count   INTEGER,
+  chunks_count      INTEGER
+); 
+CREATE INDEX IF NOT EXISTS system_metrics_created_idx
+ON system_metrics (created_at);
