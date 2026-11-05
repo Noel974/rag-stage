@@ -3,7 +3,11 @@
 FROM rag-ingest:latest
 
 WORKDIR /app
-RUN pip install --no-cache-dir --retries 5 flask flask-cors gunicorn requests uvicorn pydantic psutil
+
+RUN pip install --no-cache-dir --retries 5 flask flask-cors gunicorn requests uvicorn pydantic psutil 
+
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')"
+
 COPY app.py .
 
 EXPOSE 8000

@@ -1,0 +1,224 @@
+{
+  "label": "ragas-essai",
+  "started_at": "2026-11-05T04:49:41.285666+00:00",
+  "config": {
+    "generation_model": "open-mistral-7b",
+    "judge_model": "open-mistral-7b",
+    "top_k": 5,
+    "embedding_model": "intfloat/multilingual-e5-base",
+    "mode": "full",
+    "note": "",
+    "dataset_set": "dataset.json",
+    "dataset_set_sha": "25ad3944c3",
+    "git_commit": null,
+    "corpus": {
+      "documents": 21,
+      "chunks": 53,
+      "last_indexed_at": "2026-11-05T04:41:59.031423+00:00"
+    },
+    "chunk_chars": null,
+    "rows_per_chunk": null,
+    "ragas_error": null
+  },
+  "aggregate": {
+    "n_questions": 3,
+    "n_answerable": 3,
+    "hit_rate": 1.0,
+    "mrr": 1.0,
+    "abstention_rate": null,
+    "avg_latency_ms": 1398,
+    "errors": 0,
+    "faithfulness": 0.775,
+    "answer_relevancy": null,
+    "context_precision": 0.6296,
+    "context_recall": 1.0
+  },
+  "results": [
+    {
+      "id": "conge-01",
+      "question": "Quels types de congé peut-on demander avec le formulaire de demande de congé ?",
+      "reference": "Congés annuels, RTT ou récupération d'heures, congé sans solde, autorisation spéciale d'absence (événement familial, déménagement) ou un autre motif.",
+      "answerable": true,
+      "expected_docs": [
+        "Demande de congé"
+      ],
+      "answer": "D'après les extraits, le formulaire de demande de congé [4] permet de demander les types de congé suivants :\n\n- **Congés annuels** (congés payés) [4]\n- **RTT / récupération d'heures** [4]\n- **Congé sans solde** [4]\n- **Autorisation spéciale d'absence** (pour des motifs comme un événement familial, déménagement, etc.) [4]\n\nL'arrêt maladie **ne se demande pas** avec ce formulaire [4]. Il doit être transmis avec un certificat médical dans les délais prévus.",
+      "contexts": [
+        "'avis défavorable : ……………………\r\n6. Cadre réservé à l'administration\r\nChamp\r\n\tÀ compléter\r\n\tSolde avant la demande\r\n\t\r\n\r\n\tJours accordés\r\n\t\r\n\r\n\tSolde après la demande\r\n\t\r\n\r\n\tEnregistré le / par\r\n\t\r\n\r\n\t7. Informations pratiques [à compléter]\r\n* Délai de dépôt de la demande : [nombre] jours avant le premier jour d'absence.\r\n* Délai de réponse : [nombre] jours.\r\n* Dépôt du formulaire : [bureau, adresse e-mail ou outil interne].\r\n* Pour modifier ou annuler une demande validée, informer le responsable et le service RH par écrit.",
+        "durée de l'arrêt prescrit\r\n\tArrêt de travail transmis sous 48 heures\r\n\t3. Période de référence et acquisition\r\nLa période de référence pour l'acquisition des congés payés court du 1er juin au 31 mai. Les congés doivent être soldés avant le 31 mai suivant ; un report exceptionnel peut être accordé par la direction sur demande motivée.\r\nLa période principale de prise des congés s'étend du 1er mai au 31 octobre, avec au moins 12 jours ouvrables consécutifs à l'intérieur de cette période. Les jours restants peuvent être pris le reste de l'année, notamment pendant les vacances scolaires de décembre-janvier, sous réserve d'accord du responsable de pôle.\r\n4. Procédure de demande\r\n1.  Compléter le formulaire de demande de congés (voir annexe en fin de document).\r\n2.  Remettre le formulaire à son responsable de pôle au moins 15 jours à l'avance, et au moins 1 mois à l'avance pour toute absence supérieure à 5 jours ouvrables consécutifs.\r\n3.  Le responsable de pôle répond dans un délai de 5 jours ouvrés (accord, refus motivé ou proposition de nouvelles dates).\r\n4.  Le formulaire validé est transmis à Thomas Dijoux, gestionnaire RH, qui enregistre la demande dans le suivi des congés et met à jour le solde.\r\n5.  Le responsable de pôle informe l'équipe, ainsi que les partenaires concernés (écoles, JSC, familles) lorsque l'absence impacte une activité.\r\n5.",
+        "r un relais pour l'arrosage et les récoltes ; vente du mercredi maintenue si possible\r\n\tÉvénementiel\r\n\tAucun congé du 2 au 15 novembre pour l'équipe, en raison de l'événement Marche Tous Ensemble\r\n\t7. Absences imprévues\r\nEn cas de maladie ou d'absence imprévue, le salarié prévient son responsable de pôle dès que possible et avant le début de son service. L'arrêt de travail est transmis à Thomas Dijoux dans un délai de 48 heures. Le responsable de pôle organise le remplacement ou l'annulation des activités concernées.\r\n8. Suivi des soldes\r\nThomas Dijoux communique à chaque salarié l'état de son solde de congés chaque trimestre. Toute question relative au calcul des droits peut lui être adressée.\r\n9. Contact\r\nThomas Dijoux, Gestionnaire RH — rh@cap-harmonie-fictif.assoc\r\n________________\r\n\r\n\r\nANNEXE — FORMULAIRE DE DEMANDE DE CONGÉS\r\nÀ remettre à son responsable de pôle (voir procédure, article 4).\r\nNom et prénom\r\n\t\r\n\r\n\tPôle\r\n\t\r\n\r\n\tFonction\r\n\t\r\n\r\n\tType de congé\r\n\t\r\n\r\n\tDate de début\r\n\t\r\n\r\n\tDate de fin\r\n\t\r\n\r\n\tNombre de jours ouvrables\r\n\t\r\n\r\n\tMotif / observations\r\n\t\r\n\r\n\tDate de la demande\r\n\t\r\n\r\n\tSignature du salarié\r\n\t\r\n\r\n\tAvis du responsable de pôle (favorable / défavorable)\r\n\t\r\n\r\n\tVisa RH (Thomas Dijoux)\r\n\t\r\n\r\n\tSolde de congés après absence\r\n\t\r\n\r\n\tDocument fictif — corpus de test RAG. Aucune donnée réelle.",
+        "Demande de congé\r\nFormulaire à compléter par l'agent et à remettre à son responsable hiérarchique. Modèle à adapter aux règles de votre structure : les éléments entre crochets [ ] sont à personnaliser.\r\n1. Informations sur le demandeur\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tMatricule\r\n\t\r\n\r\n\tService / fonction\r\n\t\r\n\r\n\tResponsable hiérarchique\r\n\t\r\n\r\n\tTéléphone / e-mail\r\n\t\r\n\r\n\t2. Nature du congé\r\n☐ Congés annuels\r\n☐ RTT / récupération d'heures\r\n☐ Congé sans solde\r\n☐ Autorisation spéciale d'absence (événement familial, déménagement, etc.). Motif : ……………………\r\n☐ Autre : ……………………\r\nUn arrêt maladie ne se demande pas avec ce formulaire : il se transmet avec le certificat médical dans les délais prévus par votre structure.\r\n3. Période demandée\r\nChamp\r\n\tÀ compléter\r\n\tPremier jour d'absence\r\n\t\r\n\r\n\tDernier jour d'absence (inclus)\r\n\t\r\n\r\n\tNombre de jours ouvrés\r\n\t\r\n\r\n\tDate de reprise\r\n\t\r\n\r\n\t4. Continuité du service\r\nChamp\r\n\tÀ compléter\r\n\tCollègue assurant le relais\r\n\t\r\n\r\n\tDossiers ou tâches en cours à transmettre\r\n\t\r\n\r\n\t5. Signatures et avis\r\n\r\n\r\n\tDemandeur\r\n\tResponsable hiérarchique\r\n\tService RH\r\n\tDate\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tAvis\r\n\t\r\n\r\n\t☐ Favorable ☐ Défavorable\r\n\t☐ Enregistré\r\n\tSignature\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tMotif en cas d'avis défavorable : ……………………\r\n6. Cadre réservé à l'administration\r\nChamp\r\n\tÀ compléter\r\n\tSolde avant la demande\r\n\t\r\n\r\n\tJours accordés\r\n\t\r\n\r\n\tSolde après la demande\r\n\t\r\n\r\n\tEnregistré le / par\r\n\t\r\n\r\n\t7.",
+        "PROCÉDURE DE PRISE DE CONGÉS\r\nNote interne à destination des salariés\r\nAssociation Cap Harmonie — document fictif, corpus de test RAG.\r\n1. Objet et champ d'application\r\nCette note précise les règles applicables à la prise de congés pour l'ensemble des salariés de l'Association Cap Harmonie, tous pôles confondus. Elle complète les dispositions du Code du travail et du contrat de travail de chacun. Elle ne concerne pas les adhérents, dont les règles figurent dans le règlement intérieur.\r\n2. Types de congés et d'absences\r\nType\r\n\tRègle\r\n\tJustificatif\r\n\tCongés payés\r\n\t2,5 jours ouvrables acquis par mois travaillé, soit 30 jours ouvrables par an\r\n\tAucun\r\n\tMariage ou PACS du salarié\r\n\t4 jours ouvrables\r\n\tActe de mariage ou attestation de PACS\r\n\tNaissance ou adoption\r\n\t3 jours ouvrables\r\n\tActe de naissance ou document d'adoption\r\n\tDécès d'un proche\r\n\t3 à 5 jours ouvrables selon le lien de parenté\r\n\tActe de décès\r\n\tRécupération\r\n\tHeures effectuées lors des événements (ex. dimanche de Marche Tous Ensemble), à récupérer sous 2 mois\r\n\tAccord du responsable de pôle\r\n\tCongé sans solde\r\n\tSur demande motivée, après accord de la direction\r\n\tDemande écrite\r\n\tArrêt maladie\r\n\tSelon la durée de l'arrêt prescrit\r\n\tArrêt de travail transmis sous 48 heures\r\n\t3. Période de référence et acquisition\r\nLa période de référence pour l'acquisition des congés payés court du 1er juin au 31 mai."
+      ],
+      "retrieved": [
+        {
+          "name": "Demande de congé",
+          "drive_id": "1bP_20MMrz6eJrNWVZheuPk8c3YixCGqCBUOR-pknrZs",
+          "score": 0.8643,
+          "location": null
+        },
+        {
+          "name": "Procedure_Prise_Conges",
+          "drive_id": "1qnluwIdpXG9cGGTPoLT6iE8EX0BnobgaLfFz7hs-SQU",
+          "score": 0.8552,
+          "location": null
+        },
+        {
+          "name": "Procedure_Prise_Conges",
+          "drive_id": "1qnluwIdpXG9cGGTPoLT6iE8EX0BnobgaLfFz7hs-SQU",
+          "score": 0.8516,
+          "location": null
+        },
+        {
+          "name": "Demande de congé",
+          "drive_id": "1bP_20MMrz6eJrNWVZheuPk8c3YixCGqCBUOR-pknrZs",
+          "score": 0.8513,
+          "location": null
+        },
+        {
+          "name": "Procedure_Prise_Conges",
+          "drive_id": "1qnluwIdpXG9cGGTPoLT6iE8EX0BnobgaLfFz7hs-SQU",
+          "score": 0.8496,
+          "location": null
+        }
+      ],
+      "hit": true,
+      "rr": 1.0,
+      "abstained": null,
+      "latency_ms": 1745,
+      "search_ms": 143,
+      "generation_ms": 1601,
+      "error": null,
+      "ragas": {
+        "faithfulness": null,
+        "answer_relevancy": null,
+        "context_precision": 0.25,
+        "context_recall": 1.0
+      }
+    },
+    {
+      "id": "conge-02",
+      "question": "Un arrêt maladie se demande-t-il avec le formulaire de congé ?",
+      "reference": "Non. Un arrêt maladie se transmet avec le certificat médical, dans les délais prévus par la structure.",
+      "answerable": true,
+      "expected_docs": [
+        "Demande de congé"
+      ],
+      "answer": "Non, un arrêt maladie **ne se demande pas** avec le formulaire de demande de congé.\n\n[3] précise explicitement :\n*\"Un arrêt maladie ne se demande pas avec ce formulaire : il se transmet avec le certificat médical dans les délais prévus par votre structure.\"*",
+      "contexts": [
+        "'avis défavorable : ……………………\r\n6. Cadre réservé à l'administration\r\nChamp\r\n\tÀ compléter\r\n\tSolde avant la demande\r\n\t\r\n\r\n\tJours accordés\r\n\t\r\n\r\n\tSolde après la demande\r\n\t\r\n\r\n\tEnregistré le / par\r\n\t\r\n\r\n\t7. Informations pratiques [à compléter]\r\n* Délai de dépôt de la demande : [nombre] jours avant le premier jour d'absence.\r\n* Délai de réponse : [nombre] jours.\r\n* Dépôt du formulaire : [bureau, adresse e-mail ou outil interne].\r\n* Pour modifier ou annuler une demande validée, informer le responsable et le service RH par écrit.",
+        "r un relais pour l'arrosage et les récoltes ; vente du mercredi maintenue si possible\r\n\tÉvénementiel\r\n\tAucun congé du 2 au 15 novembre pour l'équipe, en raison de l'événement Marche Tous Ensemble\r\n\t7. Absences imprévues\r\nEn cas de maladie ou d'absence imprévue, le salarié prévient son responsable de pôle dès que possible et avant le début de son service. L'arrêt de travail est transmis à Thomas Dijoux dans un délai de 48 heures. Le responsable de pôle organise le remplacement ou l'annulation des activités concernées.\r\n8. Suivi des soldes\r\nThomas Dijoux communique à chaque salarié l'état de son solde de congés chaque trimestre. Toute question relative au calcul des droits peut lui être adressée.\r\n9. Contact\r\nThomas Dijoux, Gestionnaire RH — rh@cap-harmonie-fictif.assoc\r\n________________\r\n\r\n\r\nANNEXE — FORMULAIRE DE DEMANDE DE CONGÉS\r\nÀ remettre à son responsable de pôle (voir procédure, article 4).\r\nNom et prénom\r\n\t\r\n\r\n\tPôle\r\n\t\r\n\r\n\tFonction\r\n\t\r\n\r\n\tType de congé\r\n\t\r\n\r\n\tDate de début\r\n\t\r\n\r\n\tDate de fin\r\n\t\r\n\r\n\tNombre de jours ouvrables\r\n\t\r\n\r\n\tMotif / observations\r\n\t\r\n\r\n\tDate de la demande\r\n\t\r\n\r\n\tSignature du salarié\r\n\t\r\n\r\n\tAvis du responsable de pôle (favorable / défavorable)\r\n\t\r\n\r\n\tVisa RH (Thomas Dijoux)\r\n\t\r\n\r\n\tSolde de congés après absence\r\n\t\r\n\r\n\tDocument fictif — corpus de test RAG. Aucune donnée réelle.",
+        "Demande de congé\r\nFormulaire à compléter par l'agent et à remettre à son responsable hiérarchique. Modèle à adapter aux règles de votre structure : les éléments entre crochets [ ] sont à personnaliser.\r\n1. Informations sur le demandeur\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tMatricule\r\n\t\r\n\r\n\tService / fonction\r\n\t\r\n\r\n\tResponsable hiérarchique\r\n\t\r\n\r\n\tTéléphone / e-mail\r\n\t\r\n\r\n\t2. Nature du congé\r\n☐ Congés annuels\r\n☐ RTT / récupération d'heures\r\n☐ Congé sans solde\r\n☐ Autorisation spéciale d'absence (événement familial, déménagement, etc.). Motif : ……………………\r\n☐ Autre : ……………………\r\nUn arrêt maladie ne se demande pas avec ce formulaire : il se transmet avec le certificat médical dans les délais prévus par votre structure.\r\n3. Période demandée\r\nChamp\r\n\tÀ compléter\r\n\tPremier jour d'absence\r\n\t\r\n\r\n\tDernier jour d'absence (inclus)\r\n\t\r\n\r\n\tNombre de jours ouvrés\r\n\t\r\n\r\n\tDate de reprise\r\n\t\r\n\r\n\t4. Continuité du service\r\nChamp\r\n\tÀ compléter\r\n\tCollègue assurant le relais\r\n\t\r\n\r\n\tDossiers ou tâches en cours à transmettre\r\n\t\r\n\r\n\t5. Signatures et avis\r\n\r\n\r\n\tDemandeur\r\n\tResponsable hiérarchique\r\n\tService RH\r\n\tDate\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tAvis\r\n\t\r\n\r\n\t☐ Favorable ☐ Défavorable\r\n\t☐ Enregistré\r\n\tSignature\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tMotif en cas d'avis défavorable : ……………………\r\n6. Cadre réservé à l'administration\r\nChamp\r\n\tÀ compléter\r\n\tSolde avant la demande\r\n\t\r\n\r\n\tJours accordés\r\n\t\r\n\r\n\tSolde après la demande\r\n\t\r\n\r\n\tEnregistré le / par\r\n\t\r\n\r\n\t7.",
+        "PROCÉDURE DE PRISE DE CONGÉS\r\nNote interne à destination des salariés\r\nAssociation Cap Harmonie — document fictif, corpus de test RAG.\r\n1. Objet et champ d'application\r\nCette note précise les règles applicables à la prise de congés pour l'ensemble des salariés de l'Association Cap Harmonie, tous pôles confondus. Elle complète les dispositions du Code du travail et du contrat de travail de chacun. Elle ne concerne pas les adhérents, dont les règles figurent dans le règlement intérieur.\r\n2. Types de congés et d'absences\r\nType\r\n\tRègle\r\n\tJustificatif\r\n\tCongés payés\r\n\t2,5 jours ouvrables acquis par mois travaillé, soit 30 jours ouvrables par an\r\n\tAucun\r\n\tMariage ou PACS du salarié\r\n\t4 jours ouvrables\r\n\tActe de mariage ou attestation de PACS\r\n\tNaissance ou adoption\r\n\t3 jours ouvrables\r\n\tActe de naissance ou document d'adoption\r\n\tDécès d'un proche\r\n\t3 à 5 jours ouvrables selon le lien de parenté\r\n\tActe de décès\r\n\tRécupération\r\n\tHeures effectuées lors des événements (ex. dimanche de Marche Tous Ensemble), à récupérer sous 2 mois\r\n\tAccord du responsable de pôle\r\n\tCongé sans solde\r\n\tSur demande motivée, après accord de la direction\r\n\tDemande écrite\r\n\tArrêt maladie\r\n\tSelon la durée de l'arrêt prescrit\r\n\tArrêt de travail transmis sous 48 heures\r\n\t3. Période de référence et acquisition\r\nLa période de référence pour l'acquisition des congés payés court du 1er juin au 31 mai.",
+        "durée de l'arrêt prescrit\r\n\tArrêt de travail transmis sous 48 heures\r\n\t3. Période de référence et acquisition\r\nLa période de référence pour l'acquisition des congés payés court du 1er juin au 31 mai. Les congés doivent être soldés avant le 31 mai suivant ; un report exceptionnel peut être accordé par la direction sur demande motivée.\r\nLa période principale de prise des congés s'étend du 1er mai au 31 octobre, avec au moins 12 jours ouvrables consécutifs à l'intérieur de cette période. Les jours restants peuvent être pris le reste de l'année, notamment pendant les vacances scolaires de décembre-janvier, sous réserve d'accord du responsable de pôle.\r\n4. Procédure de demande\r\n1.  Compléter le formulaire de demande de congés (voir annexe en fin de document).\r\n2.  Remettre le formulaire à son responsable de pôle au moins 15 jours à l'avance, et au moins 1 mois à l'avance pour toute absence supérieure à 5 jours ouvrables consécutifs.\r\n3.  Le responsable de pôle répond dans un délai de 5 jours ouvrés (accord, refus motivé ou proposition de nouvelles dates).\r\n4.  Le formulaire validé est transmis à Thomas Dijoux, gestionnaire RH, qui enregistre la demande dans le suivi des congés et met à jour le solde.\r\n5.  Le responsable de pôle informe l'équipe, ainsi que les partenaires concernés (écoles, JSC, familles) lorsque l'absence impacte une activité.\r\n5."
+      ],
+      "retrieved": [
+        {
+          "name": "Demande de congé",
+          "drive_id": "1bP_20MMrz6eJrNWVZheuPk8c3YixCGqCBUOR-pknrZs",
+          "score": 0.8601,
+          "location": null
+        },
+        {
+          "name": "Procedure_Prise_Conges",
+          "drive_id": "1qnluwIdpXG9cGGTPoLT6iE8EX0BnobgaLfFz7hs-SQU",
+          "score": 0.8562,
+          "location": null
+        },
+        {
+          "name": "Demande de congé",
+          "drive_id": "1bP_20MMrz6eJrNWVZheuPk8c3YixCGqCBUOR-pknrZs",
+          "score": 0.8559,
+          "location": null
+        },
+        {
+          "name": "Procedure_Prise_Conges",
+          "drive_id": "1qnluwIdpXG9cGGTPoLT6iE8EX0BnobgaLfFz7hs-SQU",
+          "score": 0.8539,
+          "location": null
+        },
+        {
+          "name": "Procedure_Prise_Conges",
+          "drive_id": "1qnluwIdpXG9cGGTPoLT6iE8EX0BnobgaLfFz7hs-SQU",
+          "score": 0.8532,
+          "location": null
+        }
+      ],
+      "hit": true,
+      "rr": 1.0,
+      "abstained": null,
+      "latency_ms": 1305,
+      "search_ms": 86,
+      "generation_ms": 1218,
+      "error": null,
+      "ragas": {
+        "faithfulness": 0.75,
+        "answer_relevancy": null,
+        "context_precision": 0.6389,
+        "context_recall": 1.0
+      }
+    },
+    {
+      "id": "periscolaire-01",
+      "question": "Quels services peut-on demander dans le dossier périscolaire ?",
+      "reference": "L'accueil du matin, la restauration scolaire (cantine), l'accueil du soir (garderie) et l'étude surveillée.",
+      "answerable": true,
+      "expected_docs": [
+        "Demande d'inscription au périscolaire"
+      ],
+      "answer": "D'après les extraits fournis, les services que l'on peut demander dans le dossier d'inscription au périscolaire sont les suivants :\n\n- Accueil du matin [1]\n- Restauration scolaire (cantine) [1]\n- Accueil du soir (garderie) [1]\n- Étude surveillée [1]",
+      "contexts": [
+        "Demande d'inscription au périscolaire\r\nFormulaire à compléter par le responsable légal de l'enfant pour l'année scolaire 20…… / 20……. Modèle à adapter : les éléments entre crochets [ ] sont à personnaliser. Les activités du mercredi font l'objet d'un formulaire distinct.\r\n1. Responsable légal\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tLien avec l'enfant\r\n\t\r\n\r\n\tAdresse\r\n\t\r\n\r\n\tTéléphone\r\n\t\r\n\r\n\tAdresse e-mail\r\n\t\r\n\r\n\tSecond responsable (nom, téléphone)\r\n\t\r\n\r\n\t2. Enfant\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tDate de naissance\r\n\t\r\n\r\n\tÉcole\r\n\t\r\n\r\n\tClasse\r\n\t\r\n\r\n\t3. Services demandés\r\n☐ Accueil du matin\r\n☐ Restauration scolaire (cantine)\r\n☐ Accueil du soir (garderie)\r\n☐ Étude surveillée\r\nFréquence : ☐ Régulière (tableau ci-dessous) ☐ Occasionnelle (dates : ……………………)\r\nJour\r\n\tMatin\r\n\tCantine\r\n\tSoir\r\n\tÉtude\r\n\tLundi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\tMardi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\tJeudi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\tVendredi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t4. Santé de l'enfant\r\nChamp\r\n\tÀ compléter\r\n\tAllergies ou intolérances\r\n\t\r\n\r\n\tRégime alimentaire particulier\r\n\t\r\n\r\n\tProjet d'accueil individualisé (PAI)\r\n\t☐ Oui ☐ Non\r\n\tTraitement ou recommandations médicales\r\n\t\r\n\r\n\tMédecin traitant (nom, téléphone)\r\n\t\r\n\r\n\t5. Personnes autorisées à récupérer l'enfant\r\nNom et prénom\r\n\tLien avec l'enfant\r\n\tTéléphone\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tUne pièce d'identité peut être demandée à la personne qui vient chercher l'enfant.\r\n6.",
+        "récupérer l'enfant\r\nNom et prénom\r\n\tLien avec l'enfant\r\n\tTéléphone\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tUne pièce d'identité peut être demandée à la personne qui vient chercher l'enfant.\r\n6. Autorisations\r\n☐ J'autorise le personnel à faire donner les soins d'urgence nécessaires à mon enfant.\r\n☐ J'autorise la prise de photos ou de vidéos de mon enfant dans le cadre des activités.\r\n☐ J'autorise mon enfant à quitter seul la structure à l'heure de fin d'accueil (si applicable).\r\n7. Pièces à joindre [à adapter]\r\n* Justificatif de domicile.\r\n* Attestation d'assurance (responsabilité civile).\r\n* Attestation de quotient familial ou avis d'imposition.\r\n* Copie des vaccinations obligatoires.\r\n* Copie du PAI, le cas échéant.\r\n8. Engagement et signature\r\nJe certifie l'exactitude des informations fournies et m'engage à signaler tout changement. J'ai pris connaissance du règlement intérieur.\r\nFait à\r\n\tLe\r\n\tSignature du responsable légal\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t9. Informations pratiques [à compléter]\r\n* Horaires d'accueil du matin : [horaires]. Horaires d'accueil du soir : [horaires].\r\n* Tarifs : [barème selon le quotient familial].\r\n* Date limite d'inscription : [date].\r\n* Délai pour modifier ou annuler un service : [nombre] jours.\r\n* Dépôt du dossier : [guichet, adresse e-mail ou portail famille].",
+        "n de quotient familial ou avis d'imposition.\r\n* Attestation d'assurance extrascolaire.\r\n* Certificat médical pour les activités sportives, si la structure l'exige.\r\n* Copie du PAI, le cas échéant.\r\n9. Engagement et signature\r\nJe certifie l'exactitude des informations fournies, m'engage à signaler toute absence de mon enfant avant [heure] et à respecter le règlement des activités.\r\nFait à\r\n\tLe\r\n\tSignature du responsable légal\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t10. Informations pratiques [à compléter]\r\n* Date limite d'inscription : [date].\r\n* Annulation ou modification : prévenir [nombre] jours à l'avance.\r\n* Lieu d'accueil le mercredi : [adresse].\r\n* Dépôt du dossier : [guichet, adresse e-mail ou portail famille].\r\n* Liste d'attente : en cas de place insuffisante, la famille est prévenue par [moyen de contact].",
+        "rvention souhaitée, depuis quand, et les conséquences éventuelles pour les élèves ou le personnel.\r\nChamp\r\n\tÀ compléter\r\n\tDescription\r\n\t\r\n\r\n\tConstaté depuis le\r\n\t\r\n\r\n\tPhotos jointes\r\n\t☐ Oui ☐ Non\r\n\t5. Urgence et disponibilités\r\n☐ Urgente : danger pour les personnes ou activité impossible\r\n☐ Normale : gêne l'activité mais sans danger\r\n☐ Planifiable : peut attendre une date convenue\r\nChamp\r\n\tÀ compléter\r\n\tDate souhaitée\r\n\t\r\n\r\n\tCréneaux possibles\r\n\t\r\n\r\n\tIntervention possible en présence des élèves\r\n\t☐ Oui ☐ Non (hors temps scolaire)\r\n\tPersonne à contacter sur place\r\n\t\r\n\r\n\t6. Intervenant extérieur (si concerné)\r\nChamp\r\n\tÀ compléter\r\n\tNom de l'intervenant ou de l'organisme\r\n\t\r\n\r\n\tThème ou activité\r\n\t\r\n\r\n\tClasses concernées\r\n\t\r\n\r\n\tNombre d'élèves\r\n\t\r\n\r\n\tDate et horaires\r\n\t\r\n\r\n\tJustificatifs fournis (assurance, agrément)\r\n\t☐ Oui ☐ Non\r\n\t7. Validation\r\n\r\n\r\n\tDemandeur\r\n\tDirection de l'école\r\n\tService destinataire\r\n\tDate\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tAvis\r\n\t\r\n\r\n\t☐ Favorable ☐ Défavorable\r\n\t☐ Accepté ☐ Refusé\r\n\tSignature\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t8. Cadre réservé au service\r\nChamp\r\n\tÀ compléter\r\n\tNuméro de la demande\r\n\t\r\n\r\n\tReçue le\r\n\t\r\n\r\n\tPrise en charge par\r\n\t\r\n\r\n\tIntervention réalisée le\r\n\t\r\n\r\n\tObservations\r\n\t\r\n\r\n\t9.",
+        "Demande d'intervention à l'école\r\nFormulaire à compléter pour demander une intervention dans une école : intervention technique (maintenance, sécurité, matériel) ou venue d'un intervenant extérieur (animation, sport, culture). Modèle à adapter : les éléments entre crochets [ ] sont à personnaliser.\r\n1. Demandeur\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tFonction\r\n\t\r\n\r\n\tÉcole\r\n\t\r\n\r\n\tTéléphone\r\n\t\r\n\r\n\tAdresse e-mail\r\n\t\r\n\r\n\tDate de la demande\r\n\t\r\n\r\n\t2. Type d'intervention\r\n☐ Maintenance du bâtiment (toiture, porte, fenêtre, peinture, sol)\r\n☐ Électricité, plomberie ou chauffage\r\n☐ Mobilier ou équipement de classe\r\n☐ Matériel informatique ou numérique\r\n☐ Sécurité (alarme, issue de secours, risque pour les élèves)\r\n☐ Entretien ou propreté des locaux\r\n☐ Intervenant extérieur auprès des élèves (remplir la section 6)\r\n☐ Autre : ……………………\r\n3. Lieu concerné\r\nChamp\r\n\tÀ compléter\r\n\tBâtiment\r\n\t\r\n\r\n\tSalle ou zone\r\n\t\r\n\r\n\tÉtage\r\n\t\r\n\r\n\t4. Description de la demande\r\nDécrivez le problème constaté ou l'intervention souhaitée, depuis quand, et les conséquences éventuelles pour les élèves ou le personnel.\r\nChamp\r\n\tÀ compléter\r\n\tDescription\r\n\t\r\n\r\n\tConstaté depuis le\r\n\t\r\n\r\n\tPhotos jointes\r\n\t☐ Oui ☐ Non\r\n\t5."
+      ],
+      "retrieved": [
+        {
+          "name": "Demande d'inscription au périscolaire",
+          "drive_id": "19BZZHg9LKTgQnFZw6eyAeYJ_LgWHBjPxj_mgD61T9Q4",
+          "score": 0.8441,
+          "location": null
+        },
+        {
+          "name": "Demande d'inscription au périscolaire",
+          "drive_id": "19BZZHg9LKTgQnFZw6eyAeYJ_LgWHBjPxj_mgD61T9Q4",
+          "score": 0.8408,
+          "location": null
+        },
+        {
+          "name": "Inscription aux activités du mercredi",
+          "drive_id": "1jZDf0I2XjZ2XSVLaGrqs-p55Pt1_hzNZYu80T_xkkCA",
+          "score": 0.8255,
+          "location": null
+        },
+        {
+          "name": "Demande d'intervention à l'école",
+          "drive_id": "1uZqBECqTlInkZklACOmw-a6S_BhlkzPLF677lJdnsAE",
+          "score": 0.8249,
+          "location": null
+        },
+        {
+          "name": "Demande d'intervention à l'école",
+          "drive_id": "1uZqBECqTlInkZklACOmw-a6S_BhlkzPLF677lJdnsAE",
+          "score": 0.8213,
+          "location": null
+        }
+      ],
+      "hit": true,
+      "rr": 1.0,
+      "abstained": null,
+      "latency_ms": 1146,
+      "search_ms": 73,
+      "generation_ms": 1073,
+      "error": null,
+      "ragas": {
+        "faithfulness": 0.8,
+        "answer_relevancy": null,
+        "context_precision": 1.0,
+        "context_recall": 1.0
+      }
+    }
+  ]
+}

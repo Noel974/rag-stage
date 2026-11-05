@@ -271,6 +271,7 @@ def map_ragas_column(name):
 def run_ragas(rag_app, results, judge_model, workers, timeout, retries):
     """Calcule les métriques RAGAS sur les questions avec réponse et référence."""
     from langchain_core.embeddings import Embeddings
+    from langchain_google_vertexai import ChatVertexAI
     from langchain_mistralai import ChatMistralAI
     from ragas import EvaluationDataset, SingleTurnSample, evaluate
     from ragas.embeddings import LangchainEmbeddingsWrapper
@@ -279,6 +280,7 @@ def run_ragas(rag_app, results, judge_model, workers, timeout, retries):
                                LLMContextRecall, ResponseRelevancy)
     from ragas.run_config import RunConfig
 
+    print("chatmistralai import ok", ChatMistralAI)
     class AppEmbeddings(Embeddings):
         """Utilise le modèle d'embedding déjà chargé par app.py (aucun téléchargement)."""
 
@@ -317,9 +319,13 @@ def run_ragas(rag_app, results, judge_model, workers, timeout, retries):
                          response=r["answer"], reference=r["reference"])
         for r in todo
     ]
-    chat = ChatMistralAI(model=judge_model, mistral_api_key=os.environ["MISTRAL_API_KEY"],
-                         temperature=0, max_retries=retries)
-    r
+    chat = ChatMistralAI(
+    model=judge_model,
+    mistral_api_key=os.environ["MISTRAL_API_KEY"],
+    temperature=0,
+    max_retries=retries
+)
+    
     result = evaluate(
         dataset=EvaluationDataset(samples=samples),
         metrics=[

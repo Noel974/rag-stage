@@ -2,28 +2,57 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import type { ChangeEvent, KeyboardEvent } from "react";
+
 import Card from "../component/card";
 
 // Redux
-import { fetchIndexingStatus } from "../redux/features/ragSlice";
-import { useAppDispatch, useAppSelector } from "../redux/store/hoooks";
+import { fetchIndexingStatus } from "../redux";
+import { useAppDispatch, useAppSelector } from "../redux/store/hooks";
+
+// ========================================
+// INTERFACES TYPESCRIPT
+// ========================================
+
+interface IndexingStatus {
+  last_indexed_at?: string | null;
+
+  documents?: {
+    indexed?: number | null;
+  };
+
+  chunks?: number | null;
+}
+
+// ========================================
+// COMPOSANT PRINCIPAL HOME
+// ========================================
 
 export default function Home() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  // Récupération des données depuis Redux
+  // ========================================
+  // RÉCUPÉRATION DES DONNÉES REDUX
+  // ========================================
+
   const {
     indexingStatus,
     statusLoading,
     statusError,
   } = useAppSelector((state) => state.rag);
 
-  // État de la recherche
-  const [query, setQuery] = useState("");
+  // ========================================
+  // ÉTAT DE LA RECHERCHE
+  // ========================================
 
-  // Gestion de la recherche
-  const handleSearch = () => {
+  const [query, setQuery] = useState<string>("");
+
+  // ========================================
+  // GESTION DE LA RECHERCHE
+  // ========================================
+
+  const handleSearch = (): void => {
     const question = query.trim();
 
     if (!question) {
@@ -37,16 +66,32 @@ export default function Home() {
     });
   };
 
-  // Recherche avec la touche Entrée
+  // ========================================
+  // RECHERCHE AVEC LA TOUCHE ENTRÉE
+  // ========================================
+
   const handleKeyDown = (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => {
+    event: KeyboardEvent<HTMLInputElement>
+  ): void => {
     if (event.key === "Enter") {
       handleSearch();
     }
   };
 
-  // Récupération et actualisation des statistiques
+  // ========================================
+  // GESTION DU CHANGEMENT DE RECHERCHE
+  // ========================================
+
+  const handleQueryChange = (
+    event: ChangeEvent<HTMLInputElement>
+  ): void => {
+    setQuery(event.target.value);
+  };
+
+  // ========================================
+  // RÉCUPÉRATION DES STATISTIQUES
+  // ========================================
+
   useEffect(() => {
     dispatch(fetchIndexingStatus());
 
@@ -57,7 +102,10 @@ export default function Home() {
     return () => window.clearInterval(interval);
   }, [dispatch]);
 
-  // Formatage de la date de dernière indexation
+  // ========================================
+  // FORMATAGE DE LA DATE
+  // ========================================
+
   const formattedDate = indexingStatus?.last_indexed_at
     ? new Date(
         indexingStatus.last_indexed_at
@@ -67,9 +115,15 @@ export default function Home() {
       })
     : "—";
 
+  // ========================================
+  // RENDU DU COMPOSANT
+  // ========================================
+
   return (
     <main className="home">
-      {/* Section principale */}
+
+      {/* SECTION PRINCIPALE */}
+
       <section className="hero">
         <span className="hero-badge">
           Portail collaboratif
@@ -92,9 +146,7 @@ export default function Home() {
             className="search-input"
             placeholder="Posez votre question..."
             value={query}
-            onChange={(event) =>
-              setQuery(event.target.value)
-            }
+            onChange={handleQueryChange}
             onKeyDown={handleKeyDown}
             aria-label="Votre question"
           />
@@ -110,11 +162,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Accès rapides */}
+      {/* ACCÈS RAPIDES */}
+
       <section className="services">
         <h2>Accès rapides</h2>
 
         <div className="cards-grid">
+
           <Card
             title="Assistant IA"
             description="Interrogez la base documentaire grâce à l'intelligence artificielle."
@@ -138,15 +192,19 @@ export default function Home() {
               navigate("/apropos")
             }
           />
+
         </div>
       </section>
 
-      {/* Statistiques d'indexation */}
+      {/* STATISTIQUES D'INDEXATION */}
+
       <section className="stats">
+
         <div className="stat-card">
           <h3>
             {indexingStatus?.documents?.indexed ?? "—"}
           </h3>
+
           <span>Documents indexés</span>
         </div>
 
@@ -154,29 +212,35 @@ export default function Home() {
           <h3>
             {indexingStatus?.chunks ?? "—"}
           </h3>
+
           <span>Fragments de texte indexés</span>
         </div>
 
         <div className="stat-card">
           <h3>{formattedDate}</h3>
+
           <span>Dernière indexation</span>
         </div>
+
       </section>
 
-      {/* État de chargement */}
+      {/* ÉTAT DE CHARGEMENT */}
+
       {statusLoading && (
         <p role="status">
           Chargement des statistiques d'indexation...
         </p>
       )}
 
-      {/* Message d'erreur */}
+      {/* MESSAGE D'ERREUR */}
+
       {statusError && (
         <p className="stats-error" role="alert">
           Impossible de récupérer les statistiques
           de l'indexation. Veuillez réessayer plus tard.
         </p>
       )}
+
     </main>
   );
 }

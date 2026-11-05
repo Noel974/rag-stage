@@ -1,0 +1,530 @@
+{
+  "label": "run",
+  "started_at": "2026-11-04T11:58:05.892353+00:00",
+  "config": {
+    "generation_model": "open-mistral-7b",
+    "judge_model": "open-mistral-7b",
+    "top_k": 5,
+    "embedding_model": "intfloat/multilingual-e5-base",
+    "mode": "full",
+    "note": "",
+    "dataset_set": "dataset.json",
+    "dataset_set_sha": "25ad3944c3",
+    "git_commit": null,
+    "corpus": {
+      "documents": 21,
+      "chunks": 53,
+      "last_indexed_at": "2026-11-04T09:14:46.484583+00:00"
+    },
+    "chunk_chars": null,
+    "rows_per_chunk": null,
+    "ragas_error": "ModuleNotFoundError: No module named 'langchain_google_vertexai'"
+  },
+  "aggregate": {
+    "n_questions": 8,
+    "n_answerable": 6,
+    "hit_rate": 1.0,
+    "mrr": 0.9167,
+    "abstention_rate": 1.0,
+    "avg_latency_ms": 2002,
+    "errors": 0,
+    "faithfulness": null,
+    "answer_relevancy": null,
+    "context_precision": null,
+    "context_recall": null
+  },
+  "results": [
+    {
+      "id": "conge-01",
+      "question": "Quels types de congé peut-on demander avec le formulaire de demande de congé ?",
+      "reference": "Congés annuels, RTT ou récupération d'heures, congé sans solde, autorisation spéciale d'absence (événement familial, déménagement) ou un autre motif.",
+      "answerable": true,
+      "expected_docs": [
+        "Demande de congé"
+      ],
+      "answer": "D'après les extraits, voici les types de congé que l'on peut demander avec le **formulaire de demande de congé** :\n\n1. **Congés annuels** ([4])\n2. **RTT / récupération d'heures** ([4])\n3. **Congé sans solde** ([4])\n4. **Autorisation spéciale d'absence** (pour des motifs comme un événement familial, déménagement, etc.) ([4])\n\nLes autres types de congés ou absences (comme un **arrêt maladie**) ne se demandent pas avec ce formulaire ([4]).",
+      "contexts": [
+        "'avis défavorable : ……………………\r\n6. Cadre réservé à l'administration\r\nChamp\r\n\tÀ compléter\r\n\tSolde avant la demande\r\n\t\r\n\r\n\tJours accordés\r\n\t\r\n\r\n\tSolde après la demande\r\n\t\r\n\r\n\tEnregistré le / par\r\n\t\r\n\r\n\t7. Informations pratiques [à compléter]\r\n* Délai de dépôt de la demande : [nombre] jours avant le premier jour d'absence.\r\n* Délai de réponse : [nombre] jours.\r\n* Dépôt du formulaire : [bureau, adresse e-mail ou outil interne].\r\n* Pour modifier ou annuler une demande validée, informer le responsable et le service RH par écrit.",
+        "durée de l'arrêt prescrit\r\n\tArrêt de travail transmis sous 48 heures\r\n\t3. Période de référence et acquisition\r\nLa période de référence pour l'acquisition des congés payés court du 1er juin au 31 mai. Les congés doivent être soldés avant le 31 mai suivant ; un report exceptionnel peut être accordé par la direction sur demande motivée.\r\nLa période principale de prise des congés s'étend du 1er mai au 31 octobre, avec au moins 12 jours ouvrables consécutifs à l'intérieur de cette période. Les jours restants peuvent être pris le reste de l'année, notamment pendant les vacances scolaires de décembre-janvier, sous réserve d'accord du responsable de pôle.\r\n4. Procédure de demande\r\n1.  Compléter le formulaire de demande de congés (voir annexe en fin de document).\r\n2.  Remettre le formulaire à son responsable de pôle au moins 15 jours à l'avance, et au moins 1 mois à l'avance pour toute absence supérieure à 5 jours ouvrables consécutifs.\r\n3.  Le responsable de pôle répond dans un délai de 5 jours ouvrés (accord, refus motivé ou proposition de nouvelles dates).\r\n4.  Le formulaire validé est transmis à Thomas Dijoux, gestionnaire RH, qui enregistre la demande dans le suivi des congés et met à jour le solde.\r\n5.  Le responsable de pôle informe l'équipe, ainsi que les partenaires concernés (écoles, JSC, familles) lorsque l'absence impacte une activité.\r\n5.",
+        "r un relais pour l'arrosage et les récoltes ; vente du mercredi maintenue si possible\r\n\tÉvénementiel\r\n\tAucun congé du 2 au 15 novembre pour l'équipe, en raison de l'événement Marche Tous Ensemble\r\n\t7. Absences imprévues\r\nEn cas de maladie ou d'absence imprévue, le salarié prévient son responsable de pôle dès que possible et avant le début de son service. L'arrêt de travail est transmis à Thomas Dijoux dans un délai de 48 heures. Le responsable de pôle organise le remplacement ou l'annulation des activités concernées.\r\n8. Suivi des soldes\r\nThomas Dijoux communique à chaque salarié l'état de son solde de congés chaque trimestre. Toute question relative au calcul des droits peut lui être adressée.\r\n9. Contact\r\nThomas Dijoux, Gestionnaire RH — rh@cap-harmonie-fictif.assoc\r\n________________\r\n\r\n\r\nANNEXE — FORMULAIRE DE DEMANDE DE CONGÉS\r\nÀ remettre à son responsable de pôle (voir procédure, article 4).\r\nNom et prénom\r\n\t\r\n\r\n\tPôle\r\n\t\r\n\r\n\tFonction\r\n\t\r\n\r\n\tType de congé\r\n\t\r\n\r\n\tDate de début\r\n\t\r\n\r\n\tDate de fin\r\n\t\r\n\r\n\tNombre de jours ouvrables\r\n\t\r\n\r\n\tMotif / observations\r\n\t\r\n\r\n\tDate de la demande\r\n\t\r\n\r\n\tSignature du salarié\r\n\t\r\n\r\n\tAvis du responsable de pôle (favorable / défavorable)\r\n\t\r\n\r\n\tVisa RH (Thomas Dijoux)\r\n\t\r\n\r\n\tSolde de congés après absence\r\n\t\r\n\r\n\tDocument fictif — corpus de test RAG. Aucune donnée réelle.",
+        "Demande de congé\r\nFormulaire à compléter par l'agent et à remettre à son responsable hiérarchique. Modèle à adapter aux règles de votre structure : les éléments entre crochets [ ] sont à personnaliser.\r\n1. Informations sur le demandeur\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tMatricule\r\n\t\r\n\r\n\tService / fonction\r\n\t\r\n\r\n\tResponsable hiérarchique\r\n\t\r\n\r\n\tTéléphone / e-mail\r\n\t\r\n\r\n\t2. Nature du congé\r\n☐ Congés annuels\r\n☐ RTT / récupération d'heures\r\n☐ Congé sans solde\r\n☐ Autorisation spéciale d'absence (événement familial, déménagement, etc.). Motif : ……………………\r\n☐ Autre : ……………………\r\nUn arrêt maladie ne se demande pas avec ce formulaire : il se transmet avec le certificat médical dans les délais prévus par votre structure.\r\n3. Période demandée\r\nChamp\r\n\tÀ compléter\r\n\tPremier jour d'absence\r\n\t\r\n\r\n\tDernier jour d'absence (inclus)\r\n\t\r\n\r\n\tNombre de jours ouvrés\r\n\t\r\n\r\n\tDate de reprise\r\n\t\r\n\r\n\t4. Continuité du service\r\nChamp\r\n\tÀ compléter\r\n\tCollègue assurant le relais\r\n\t\r\n\r\n\tDossiers ou tâches en cours à transmettre\r\n\t\r\n\r\n\t5. Signatures et avis\r\n\r\n\r\n\tDemandeur\r\n\tResponsable hiérarchique\r\n\tService RH\r\n\tDate\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tAvis\r\n\t\r\n\r\n\t☐ Favorable ☐ Défavorable\r\n\t☐ Enregistré\r\n\tSignature\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tMotif en cas d'avis défavorable : ……………………\r\n6. Cadre réservé à l'administration\r\nChamp\r\n\tÀ compléter\r\n\tSolde avant la demande\r\n\t\r\n\r\n\tJours accordés\r\n\t\r\n\r\n\tSolde après la demande\r\n\t\r\n\r\n\tEnregistré le / par\r\n\t\r\n\r\n\t7.",
+        "PROCÉDURE DE PRISE DE CONGÉS\r\nNote interne à destination des salariés\r\nAssociation Cap Harmonie — document fictif, corpus de test RAG.\r\n1. Objet et champ d'application\r\nCette note précise les règles applicables à la prise de congés pour l'ensemble des salariés de l'Association Cap Harmonie, tous pôles confondus. Elle complète les dispositions du Code du travail et du contrat de travail de chacun. Elle ne concerne pas les adhérents, dont les règles figurent dans le règlement intérieur.\r\n2. Types de congés et d'absences\r\nType\r\n\tRègle\r\n\tJustificatif\r\n\tCongés payés\r\n\t2,5 jours ouvrables acquis par mois travaillé, soit 30 jours ouvrables par an\r\n\tAucun\r\n\tMariage ou PACS du salarié\r\n\t4 jours ouvrables\r\n\tActe de mariage ou attestation de PACS\r\n\tNaissance ou adoption\r\n\t3 jours ouvrables\r\n\tActe de naissance ou document d'adoption\r\n\tDécès d'un proche\r\n\t3 à 5 jours ouvrables selon le lien de parenté\r\n\tActe de décès\r\n\tRécupération\r\n\tHeures effectuées lors des événements (ex. dimanche de Marche Tous Ensemble), à récupérer sous 2 mois\r\n\tAccord du responsable de pôle\r\n\tCongé sans solde\r\n\tSur demande motivée, après accord de la direction\r\n\tDemande écrite\r\n\tArrêt maladie\r\n\tSelon la durée de l'arrêt prescrit\r\n\tArrêt de travail transmis sous 48 heures\r\n\t3. Période de référence et acquisition\r\nLa période de référence pour l'acquisition des congés payés court du 1er juin au 31 mai."
+      ],
+      "retrieved": [
+        {
+          "name": "Demande de congé",
+          "drive_id": "1bP_20MMrz6eJrNWVZheuPk8c3YixCGqCBUOR-pknrZs",
+          "score": 0.8643,
+          "location": null
+        },
+        {
+          "name": "Procedure_Prise_Conges",
+          "drive_id": "1qnluwIdpXG9cGGTPoLT6iE8EX0BnobgaLfFz7hs-SQU",
+          "score": 0.8552,
+          "location": null
+        },
+        {
+          "name": "Procedure_Prise_Conges",
+          "drive_id": "1qnluwIdpXG9cGGTPoLT6iE8EX0BnobgaLfFz7hs-SQU",
+          "score": 0.8516,
+          "location": null
+        },
+        {
+          "name": "Demande de congé",
+          "drive_id": "1bP_20MMrz6eJrNWVZheuPk8c3YixCGqCBUOR-pknrZs",
+          "score": 0.8513,
+          "location": null
+        },
+        {
+          "name": "Procedure_Prise_Conges",
+          "drive_id": "1qnluwIdpXG9cGGTPoLT6iE8EX0BnobgaLfFz7hs-SQU",
+          "score": 0.8496,
+          "location": null
+        }
+      ],
+      "hit": true,
+      "rr": 1.0,
+      "abstained": null,
+      "latency_ms": 2500,
+      "search_ms": 92,
+      "generation_ms": 2408,
+      "error": null,
+      "ragas": {
+        "faithfulness": null,
+        "answer_relevancy": null,
+        "context_precision": null,
+        "context_recall": null
+      }
+    },
+    {
+      "id": "conge-02",
+      "question": "Un arrêt maladie se demande-t-il avec le formulaire de congé ?",
+      "reference": "Non. Un arrêt maladie se transmet avec le certificat médical, dans les délais prévus par la structure.",
+      "answerable": true,
+      "expected_docs": [
+        "Demande de congé"
+      ],
+      "answer": "Non, un arrêt maladie **ne se demande pas** avec le formulaire de congé.\n\n[3] précise explicitement :\n*\"Un arrêt maladie ne se demande pas avec ce formulaire : il se transmet avec le certificat médical dans les délais prévus par votre structure.\"*",
+      "contexts": [
+        "'avis défavorable : ……………………\r\n6. Cadre réservé à l'administration\r\nChamp\r\n\tÀ compléter\r\n\tSolde avant la demande\r\n\t\r\n\r\n\tJours accordés\r\n\t\r\n\r\n\tSolde après la demande\r\n\t\r\n\r\n\tEnregistré le / par\r\n\t\r\n\r\n\t7. Informations pratiques [à compléter]\r\n* Délai de dépôt de la demande : [nombre] jours avant le premier jour d'absence.\r\n* Délai de réponse : [nombre] jours.\r\n* Dépôt du formulaire : [bureau, adresse e-mail ou outil interne].\r\n* Pour modifier ou annuler une demande validée, informer le responsable et le service RH par écrit.",
+        "r un relais pour l'arrosage et les récoltes ; vente du mercredi maintenue si possible\r\n\tÉvénementiel\r\n\tAucun congé du 2 au 15 novembre pour l'équipe, en raison de l'événement Marche Tous Ensemble\r\n\t7. Absences imprévues\r\nEn cas de maladie ou d'absence imprévue, le salarié prévient son responsable de pôle dès que possible et avant le début de son service. L'arrêt de travail est transmis à Thomas Dijoux dans un délai de 48 heures. Le responsable de pôle organise le remplacement ou l'annulation des activités concernées.\r\n8. Suivi des soldes\r\nThomas Dijoux communique à chaque salarié l'état de son solde de congés chaque trimestre. Toute question relative au calcul des droits peut lui être adressée.\r\n9. Contact\r\nThomas Dijoux, Gestionnaire RH — rh@cap-harmonie-fictif.assoc\r\n________________\r\n\r\n\r\nANNEXE — FORMULAIRE DE DEMANDE DE CONGÉS\r\nÀ remettre à son responsable de pôle (voir procédure, article 4).\r\nNom et prénom\r\n\t\r\n\r\n\tPôle\r\n\t\r\n\r\n\tFonction\r\n\t\r\n\r\n\tType de congé\r\n\t\r\n\r\n\tDate de début\r\n\t\r\n\r\n\tDate de fin\r\n\t\r\n\r\n\tNombre de jours ouvrables\r\n\t\r\n\r\n\tMotif / observations\r\n\t\r\n\r\n\tDate de la demande\r\n\t\r\n\r\n\tSignature du salarié\r\n\t\r\n\r\n\tAvis du responsable de pôle (favorable / défavorable)\r\n\t\r\n\r\n\tVisa RH (Thomas Dijoux)\r\n\t\r\n\r\n\tSolde de congés après absence\r\n\t\r\n\r\n\tDocument fictif — corpus de test RAG. Aucune donnée réelle.",
+        "Demande de congé\r\nFormulaire à compléter par l'agent et à remettre à son responsable hiérarchique. Modèle à adapter aux règles de votre structure : les éléments entre crochets [ ] sont à personnaliser.\r\n1. Informations sur le demandeur\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tMatricule\r\n\t\r\n\r\n\tService / fonction\r\n\t\r\n\r\n\tResponsable hiérarchique\r\n\t\r\n\r\n\tTéléphone / e-mail\r\n\t\r\n\r\n\t2. Nature du congé\r\n☐ Congés annuels\r\n☐ RTT / récupération d'heures\r\n☐ Congé sans solde\r\n☐ Autorisation spéciale d'absence (événement familial, déménagement, etc.). Motif : ……………………\r\n☐ Autre : ……………………\r\nUn arrêt maladie ne se demande pas avec ce formulaire : il se transmet avec le certificat médical dans les délais prévus par votre structure.\r\n3. Période demandée\r\nChamp\r\n\tÀ compléter\r\n\tPremier jour d'absence\r\n\t\r\n\r\n\tDernier jour d'absence (inclus)\r\n\t\r\n\r\n\tNombre de jours ouvrés\r\n\t\r\n\r\n\tDate de reprise\r\n\t\r\n\r\n\t4. Continuité du service\r\nChamp\r\n\tÀ compléter\r\n\tCollègue assurant le relais\r\n\t\r\n\r\n\tDossiers ou tâches en cours à transmettre\r\n\t\r\n\r\n\t5. Signatures et avis\r\n\r\n\r\n\tDemandeur\r\n\tResponsable hiérarchique\r\n\tService RH\r\n\tDate\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tAvis\r\n\t\r\n\r\n\t☐ Favorable ☐ Défavorable\r\n\t☐ Enregistré\r\n\tSignature\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tMotif en cas d'avis défavorable : ……………………\r\n6. Cadre réservé à l'administration\r\nChamp\r\n\tÀ compléter\r\n\tSolde avant la demande\r\n\t\r\n\r\n\tJours accordés\r\n\t\r\n\r\n\tSolde après la demande\r\n\t\r\n\r\n\tEnregistré le / par\r\n\t\r\n\r\n\t7.",
+        "PROCÉDURE DE PRISE DE CONGÉS\r\nNote interne à destination des salariés\r\nAssociation Cap Harmonie — document fictif, corpus de test RAG.\r\n1. Objet et champ d'application\r\nCette note précise les règles applicables à la prise de congés pour l'ensemble des salariés de l'Association Cap Harmonie, tous pôles confondus. Elle complète les dispositions du Code du travail et du contrat de travail de chacun. Elle ne concerne pas les adhérents, dont les règles figurent dans le règlement intérieur.\r\n2. Types de congés et d'absences\r\nType\r\n\tRègle\r\n\tJustificatif\r\n\tCongés payés\r\n\t2,5 jours ouvrables acquis par mois travaillé, soit 30 jours ouvrables par an\r\n\tAucun\r\n\tMariage ou PACS du salarié\r\n\t4 jours ouvrables\r\n\tActe de mariage ou attestation de PACS\r\n\tNaissance ou adoption\r\n\t3 jours ouvrables\r\n\tActe de naissance ou document d'adoption\r\n\tDécès d'un proche\r\n\t3 à 5 jours ouvrables selon le lien de parenté\r\n\tActe de décès\r\n\tRécupération\r\n\tHeures effectuées lors des événements (ex. dimanche de Marche Tous Ensemble), à récupérer sous 2 mois\r\n\tAccord du responsable de pôle\r\n\tCongé sans solde\r\n\tSur demande motivée, après accord de la direction\r\n\tDemande écrite\r\n\tArrêt maladie\r\n\tSelon la durée de l'arrêt prescrit\r\n\tArrêt de travail transmis sous 48 heures\r\n\t3. Période de référence et acquisition\r\nLa période de référence pour l'acquisition des congés payés court du 1er juin au 31 mai.",
+        "durée de l'arrêt prescrit\r\n\tArrêt de travail transmis sous 48 heures\r\n\t3. Période de référence et acquisition\r\nLa période de référence pour l'acquisition des congés payés court du 1er juin au 31 mai. Les congés doivent être soldés avant le 31 mai suivant ; un report exceptionnel peut être accordé par la direction sur demande motivée.\r\nLa période principale de prise des congés s'étend du 1er mai au 31 octobre, avec au moins 12 jours ouvrables consécutifs à l'intérieur de cette période. Les jours restants peuvent être pris le reste de l'année, notamment pendant les vacances scolaires de décembre-janvier, sous réserve d'accord du responsable de pôle.\r\n4. Procédure de demande\r\n1.  Compléter le formulaire de demande de congés (voir annexe en fin de document).\r\n2.  Remettre le formulaire à son responsable de pôle au moins 15 jours à l'avance, et au moins 1 mois à l'avance pour toute absence supérieure à 5 jours ouvrables consécutifs.\r\n3.  Le responsable de pôle répond dans un délai de 5 jours ouvrés (accord, refus motivé ou proposition de nouvelles dates).\r\n4.  Le formulaire validé est transmis à Thomas Dijoux, gestionnaire RH, qui enregistre la demande dans le suivi des congés et met à jour le solde.\r\n5.  Le responsable de pôle informe l'équipe, ainsi que les partenaires concernés (écoles, JSC, familles) lorsque l'absence impacte une activité.\r\n5."
+      ],
+      "retrieved": [
+        {
+          "name": "Demande de congé",
+          "drive_id": "1bP_20MMrz6eJrNWVZheuPk8c3YixCGqCBUOR-pknrZs",
+          "score": 0.8601,
+          "location": null
+        },
+        {
+          "name": "Procedure_Prise_Conges",
+          "drive_id": "1qnluwIdpXG9cGGTPoLT6iE8EX0BnobgaLfFz7hs-SQU",
+          "score": 0.8562,
+          "location": null
+        },
+        {
+          "name": "Demande de congé",
+          "drive_id": "1bP_20MMrz6eJrNWVZheuPk8c3YixCGqCBUOR-pknrZs",
+          "score": 0.8559,
+          "location": null
+        },
+        {
+          "name": "Procedure_Prise_Conges",
+          "drive_id": "1qnluwIdpXG9cGGTPoLT6iE8EX0BnobgaLfFz7hs-SQU",
+          "score": 0.8539,
+          "location": null
+        },
+        {
+          "name": "Procedure_Prise_Conges",
+          "drive_id": "1qnluwIdpXG9cGGTPoLT6iE8EX0BnobgaLfFz7hs-SQU",
+          "score": 0.8532,
+          "location": null
+        }
+      ],
+      "hit": true,
+      "rr": 1.0,
+      "abstained": null,
+      "latency_ms": 1109,
+      "search_ms": 81,
+      "generation_ms": 1027,
+      "error": null,
+      "ragas": {
+        "faithfulness": null,
+        "answer_relevancy": null,
+        "context_precision": null,
+        "context_recall": null
+      }
+    },
+    {
+      "id": "periscolaire-01",
+      "question": "Quels services peut-on demander dans le dossier périscolaire ?",
+      "reference": "L'accueil du matin, la restauration scolaire (cantine), l'accueil du soir (garderie) et l'étude surveillée.",
+      "answerable": true,
+      "expected_docs": [
+        "Demande d'inscription au périscolaire"
+      ],
+      "answer": "D'après les extraits fournis, les services que l'on peut demander dans le dossier d'**inscription au périscolaire** sont les suivants :\n\n- Accueil du matin\n- Restauration scolaire (cantine)\n- Accueil du soir (garderie)\n- Étude surveillée\n\n[1]",
+      "contexts": [
+        "Demande d'inscription au périscolaire\r\nFormulaire à compléter par le responsable légal de l'enfant pour l'année scolaire 20…… / 20……. Modèle à adapter : les éléments entre crochets [ ] sont à personnaliser. Les activités du mercredi font l'objet d'un formulaire distinct.\r\n1. Responsable légal\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tLien avec l'enfant\r\n\t\r\n\r\n\tAdresse\r\n\t\r\n\r\n\tTéléphone\r\n\t\r\n\r\n\tAdresse e-mail\r\n\t\r\n\r\n\tSecond responsable (nom, téléphone)\r\n\t\r\n\r\n\t2. Enfant\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tDate de naissance\r\n\t\r\n\r\n\tÉcole\r\n\t\r\n\r\n\tClasse\r\n\t\r\n\r\n\t3. Services demandés\r\n☐ Accueil du matin\r\n☐ Restauration scolaire (cantine)\r\n☐ Accueil du soir (garderie)\r\n☐ Étude surveillée\r\nFréquence : ☐ Régulière (tableau ci-dessous) ☐ Occasionnelle (dates : ……………………)\r\nJour\r\n\tMatin\r\n\tCantine\r\n\tSoir\r\n\tÉtude\r\n\tLundi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\tMardi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\tJeudi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\tVendredi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t4. Santé de l'enfant\r\nChamp\r\n\tÀ compléter\r\n\tAllergies ou intolérances\r\n\t\r\n\r\n\tRégime alimentaire particulier\r\n\t\r\n\r\n\tProjet d'accueil individualisé (PAI)\r\n\t☐ Oui ☐ Non\r\n\tTraitement ou recommandations médicales\r\n\t\r\n\r\n\tMédecin traitant (nom, téléphone)\r\n\t\r\n\r\n\t5. Personnes autorisées à récupérer l'enfant\r\nNom et prénom\r\n\tLien avec l'enfant\r\n\tTéléphone\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tUne pièce d'identité peut être demandée à la personne qui vient chercher l'enfant.\r\n6.",
+        "récupérer l'enfant\r\nNom et prénom\r\n\tLien avec l'enfant\r\n\tTéléphone\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tUne pièce d'identité peut être demandée à la personne qui vient chercher l'enfant.\r\n6. Autorisations\r\n☐ J'autorise le personnel à faire donner les soins d'urgence nécessaires à mon enfant.\r\n☐ J'autorise la prise de photos ou de vidéos de mon enfant dans le cadre des activités.\r\n☐ J'autorise mon enfant à quitter seul la structure à l'heure de fin d'accueil (si applicable).\r\n7. Pièces à joindre [à adapter]\r\n* Justificatif de domicile.\r\n* Attestation d'assurance (responsabilité civile).\r\n* Attestation de quotient familial ou avis d'imposition.\r\n* Copie des vaccinations obligatoires.\r\n* Copie du PAI, le cas échéant.\r\n8. Engagement et signature\r\nJe certifie l'exactitude des informations fournies et m'engage à signaler tout changement. J'ai pris connaissance du règlement intérieur.\r\nFait à\r\n\tLe\r\n\tSignature du responsable légal\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t9. Informations pratiques [à compléter]\r\n* Horaires d'accueil du matin : [horaires]. Horaires d'accueil du soir : [horaires].\r\n* Tarifs : [barème selon le quotient familial].\r\n* Date limite d'inscription : [date].\r\n* Délai pour modifier ou annuler un service : [nombre] jours.\r\n* Dépôt du dossier : [guichet, adresse e-mail ou portail famille].",
+        "n de quotient familial ou avis d'imposition.\r\n* Attestation d'assurance extrascolaire.\r\n* Certificat médical pour les activités sportives, si la structure l'exige.\r\n* Copie du PAI, le cas échéant.\r\n9. Engagement et signature\r\nJe certifie l'exactitude des informations fournies, m'engage à signaler toute absence de mon enfant avant [heure] et à respecter le règlement des activités.\r\nFait à\r\n\tLe\r\n\tSignature du responsable légal\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t10. Informations pratiques [à compléter]\r\n* Date limite d'inscription : [date].\r\n* Annulation ou modification : prévenir [nombre] jours à l'avance.\r\n* Lieu d'accueil le mercredi : [adresse].\r\n* Dépôt du dossier : [guichet, adresse e-mail ou portail famille].\r\n* Liste d'attente : en cas de place insuffisante, la famille est prévenue par [moyen de contact].",
+        "rvention souhaitée, depuis quand, et les conséquences éventuelles pour les élèves ou le personnel.\r\nChamp\r\n\tÀ compléter\r\n\tDescription\r\n\t\r\n\r\n\tConstaté depuis le\r\n\t\r\n\r\n\tPhotos jointes\r\n\t☐ Oui ☐ Non\r\n\t5. Urgence et disponibilités\r\n☐ Urgente : danger pour les personnes ou activité impossible\r\n☐ Normale : gêne l'activité mais sans danger\r\n☐ Planifiable : peut attendre une date convenue\r\nChamp\r\n\tÀ compléter\r\n\tDate souhaitée\r\n\t\r\n\r\n\tCréneaux possibles\r\n\t\r\n\r\n\tIntervention possible en présence des élèves\r\n\t☐ Oui ☐ Non (hors temps scolaire)\r\n\tPersonne à contacter sur place\r\n\t\r\n\r\n\t6. Intervenant extérieur (si concerné)\r\nChamp\r\n\tÀ compléter\r\n\tNom de l'intervenant ou de l'organisme\r\n\t\r\n\r\n\tThème ou activité\r\n\t\r\n\r\n\tClasses concernées\r\n\t\r\n\r\n\tNombre d'élèves\r\n\t\r\n\r\n\tDate et horaires\r\n\t\r\n\r\n\tJustificatifs fournis (assurance, agrément)\r\n\t☐ Oui ☐ Non\r\n\t7. Validation\r\n\r\n\r\n\tDemandeur\r\n\tDirection de l'école\r\n\tService destinataire\r\n\tDate\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tAvis\r\n\t\r\n\r\n\t☐ Favorable ☐ Défavorable\r\n\t☐ Accepté ☐ Refusé\r\n\tSignature\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t8. Cadre réservé au service\r\nChamp\r\n\tÀ compléter\r\n\tNuméro de la demande\r\n\t\r\n\r\n\tReçue le\r\n\t\r\n\r\n\tPrise en charge par\r\n\t\r\n\r\n\tIntervention réalisée le\r\n\t\r\n\r\n\tObservations\r\n\t\r\n\r\n\t9.",
+        "Demande d'intervention à l'école\r\nFormulaire à compléter pour demander une intervention dans une école : intervention technique (maintenance, sécurité, matériel) ou venue d'un intervenant extérieur (animation, sport, culture). Modèle à adapter : les éléments entre crochets [ ] sont à personnaliser.\r\n1. Demandeur\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tFonction\r\n\t\r\n\r\n\tÉcole\r\n\t\r\n\r\n\tTéléphone\r\n\t\r\n\r\n\tAdresse e-mail\r\n\t\r\n\r\n\tDate de la demande\r\n\t\r\n\r\n\t2. Type d'intervention\r\n☐ Maintenance du bâtiment (toiture, porte, fenêtre, peinture, sol)\r\n☐ Électricité, plomberie ou chauffage\r\n☐ Mobilier ou équipement de classe\r\n☐ Matériel informatique ou numérique\r\n☐ Sécurité (alarme, issue de secours, risque pour les élèves)\r\n☐ Entretien ou propreté des locaux\r\n☐ Intervenant extérieur auprès des élèves (remplir la section 6)\r\n☐ Autre : ……………………\r\n3. Lieu concerné\r\nChamp\r\n\tÀ compléter\r\n\tBâtiment\r\n\t\r\n\r\n\tSalle ou zone\r\n\t\r\n\r\n\tÉtage\r\n\t\r\n\r\n\t4. Description de la demande\r\nDécrivez le problème constaté ou l'intervention souhaitée, depuis quand, et les conséquences éventuelles pour les élèves ou le personnel.\r\nChamp\r\n\tÀ compléter\r\n\tDescription\r\n\t\r\n\r\n\tConstaté depuis le\r\n\t\r\n\r\n\tPhotos jointes\r\n\t☐ Oui ☐ Non\r\n\t5."
+      ],
+      "retrieved": [
+        {
+          "name": "Demande d'inscription au périscolaire",
+          "drive_id": "19BZZHg9LKTgQnFZw6eyAeYJ_LgWHBjPxj_mgD61T9Q4",
+          "score": 0.8441,
+          "location": null
+        },
+        {
+          "name": "Demande d'inscription au périscolaire",
+          "drive_id": "19BZZHg9LKTgQnFZw6eyAeYJ_LgWHBjPxj_mgD61T9Q4",
+          "score": 0.8408,
+          "location": null
+        },
+        {
+          "name": "Inscription aux activités du mercredi",
+          "drive_id": "1jZDf0I2XjZ2XSVLaGrqs-p55Pt1_hzNZYu80T_xkkCA",
+          "score": 0.8255,
+          "location": null
+        },
+        {
+          "name": "Demande d'intervention à l'école",
+          "drive_id": "1uZqBECqTlInkZklACOmw-a6S_BhlkzPLF677lJdnsAE",
+          "score": 0.8249,
+          "location": null
+        },
+        {
+          "name": "Demande d'intervention à l'école",
+          "drive_id": "1uZqBECqTlInkZklACOmw-a6S_BhlkzPLF677lJdnsAE",
+          "score": 0.8213,
+          "location": null
+        }
+      ],
+      "hit": true,
+      "rr": 1.0,
+      "abstained": null,
+      "latency_ms": 1890,
+      "search_ms": 99,
+      "generation_ms": 1791,
+      "error": null,
+      "ragas": {
+        "faithfulness": null,
+        "answer_relevancy": null,
+        "context_precision": null,
+        "context_recall": null
+      }
+    },
+    {
+      "id": "periscolaire-02",
+      "question": "Quelles pièces faut-il joindre au dossier périscolaire ?",
+      "reference": "Un justificatif de domicile, une attestation d'assurance, une attestation de quotient familial ou l'avis d'imposition, la copie des vaccinations obligatoires et, le cas échéant, la copie du PAI.",
+      "answerable": true,
+      "expected_docs": [
+        "Demande d'inscription au périscolaire"
+      ],
+      "answer": "D'après les extraits fournis, voici les pièces à joindre au **dossier d'inscription au périscolaire** ([1] et [2]) :\n\n- Justificatif de domicile\n- Attestation d'assurance (responsabilité civile)\n- Attestation de quotient familial ou avis d'imposition\n- Copie des vaccinations obligatoires\n- Copie du **Projet d’Accueil Individualisé (PAI)**, si applicable ([1] et [2]).\n\n*(Note : Les autres documents comme le certificat médical pour activités sportives ou l'attestation d'assurance extrascolaire concernent plutôt les activités du mercredi ([3]).)*",
+      "contexts": [
+        "Demande d'inscription au périscolaire\r\nFormulaire à compléter par le responsable légal de l'enfant pour l'année scolaire 20…… / 20……. Modèle à adapter : les éléments entre crochets [ ] sont à personnaliser. Les activités du mercredi font l'objet d'un formulaire distinct.\r\n1. Responsable légal\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tLien avec l'enfant\r\n\t\r\n\r\n\tAdresse\r\n\t\r\n\r\n\tTéléphone\r\n\t\r\n\r\n\tAdresse e-mail\r\n\t\r\n\r\n\tSecond responsable (nom, téléphone)\r\n\t\r\n\r\n\t2. Enfant\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tDate de naissance\r\n\t\r\n\r\n\tÉcole\r\n\t\r\n\r\n\tClasse\r\n\t\r\n\r\n\t3. Services demandés\r\n☐ Accueil du matin\r\n☐ Restauration scolaire (cantine)\r\n☐ Accueil du soir (garderie)\r\n☐ Étude surveillée\r\nFréquence : ☐ Régulière (tableau ci-dessous) ☐ Occasionnelle (dates : ……………………)\r\nJour\r\n\tMatin\r\n\tCantine\r\n\tSoir\r\n\tÉtude\r\n\tLundi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\tMardi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\tJeudi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\tVendredi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t4. Santé de l'enfant\r\nChamp\r\n\tÀ compléter\r\n\tAllergies ou intolérances\r\n\t\r\n\r\n\tRégime alimentaire particulier\r\n\t\r\n\r\n\tProjet d'accueil individualisé (PAI)\r\n\t☐ Oui ☐ Non\r\n\tTraitement ou recommandations médicales\r\n\t\r\n\r\n\tMédecin traitant (nom, téléphone)\r\n\t\r\n\r\n\t5. Personnes autorisées à récupérer l'enfant\r\nNom et prénom\r\n\tLien avec l'enfant\r\n\tTéléphone\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tUne pièce d'identité peut être demandée à la personne qui vient chercher l'enfant.\r\n6.",
+        "récupérer l'enfant\r\nNom et prénom\r\n\tLien avec l'enfant\r\n\tTéléphone\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tUne pièce d'identité peut être demandée à la personne qui vient chercher l'enfant.\r\n6. Autorisations\r\n☐ J'autorise le personnel à faire donner les soins d'urgence nécessaires à mon enfant.\r\n☐ J'autorise la prise de photos ou de vidéos de mon enfant dans le cadre des activités.\r\n☐ J'autorise mon enfant à quitter seul la structure à l'heure de fin d'accueil (si applicable).\r\n7. Pièces à joindre [à adapter]\r\n* Justificatif de domicile.\r\n* Attestation d'assurance (responsabilité civile).\r\n* Attestation de quotient familial ou avis d'imposition.\r\n* Copie des vaccinations obligatoires.\r\n* Copie du PAI, le cas échéant.\r\n8. Engagement et signature\r\nJe certifie l'exactitude des informations fournies et m'engage à signaler tout changement. J'ai pris connaissance du règlement intérieur.\r\nFait à\r\n\tLe\r\n\tSignature du responsable légal\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t9. Informations pratiques [à compléter]\r\n* Horaires d'accueil du matin : [horaires]. Horaires d'accueil du soir : [horaires].\r\n* Tarifs : [barème selon le quotient familial].\r\n* Date limite d'inscription : [date].\r\n* Délai pour modifier ou annuler un service : [nombre] jours.\r\n* Dépôt du dossier : [guichet, adresse e-mail ou portail famille].",
+        "n de quotient familial ou avis d'imposition.\r\n* Attestation d'assurance extrascolaire.\r\n* Certificat médical pour les activités sportives, si la structure l'exige.\r\n* Copie du PAI, le cas échéant.\r\n9. Engagement et signature\r\nJe certifie l'exactitude des informations fournies, m'engage à signaler toute absence de mon enfant avant [heure] et à respecter le règlement des activités.\r\nFait à\r\n\tLe\r\n\tSignature du responsable légal\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t10. Informations pratiques [à compléter]\r\n* Date limite d'inscription : [date].\r\n* Annulation ou modification : prévenir [nombre] jours à l'avance.\r\n* Lieu d'accueil le mercredi : [adresse].\r\n* Dépôt du dossier : [guichet, adresse e-mail ou portail famille].\r\n* Liste d'attente : en cas de place insuffisante, la famille est prévenue par [moyen de contact].",
+        "di, 15h45 – 16h30\r\n\tEnfants inscrits, niveau avancé\r\n\tAteliers enfants\r\n\tCouture\r\n\tCréneau à définir\r\n\tEnfants inscrits à l'année\r\n\tAteliers enfants\r\n\tCréation bois\r\n\tCréneau à définir\r\n\tEnfants inscrits à l'année\r\n\tTarifs\r\nActivité\r\n\tTarif\r\n\tAteliers enfants (mercredi, à l'année)\r\n\t30 €/an par enfant\r\n\tMusique et environnement périscolaire\r\n\tInclus dans l'adhésion associative\r\n\tMultisport enfants (mercredi après-midi)\r\n\tÀ la séance (tarif à définir)\r\n\tAtelier plantation — groupe JSC\r\n\tGratuit pour les enfants inscrits au JSC\r\n\tEncadrement\r\nChaque activité est encadrée par un animateur ou une animatrice référent(e), rattaché(e) au pôle concerné :\r\n* Culture & Musique : Fabrice Morel, Nathalie Hoarau, Candy Azéma\r\n* Environnement & Jardin : Olivier Rivière, Ludivine Morel\r\n* Sport : Mickaël Rivière\r\n* Ateliers enfants : Pauline Fontaine (référente), Mathieu Payet, Lucie Hoarau, Romain Rivière, Chloé Payet, Damien Morel\r\nInscription\r\nLes inscriptions se font auprès du secrétariat de l'association, sur présentation d'un justificatif d'identité de l'enfant. Le règlement de la cotisation annuelle des Ateliers enfants (30 €) vaut inscription pour l'année scolaire en cours.\r\nContact\r\nPauline Fontaine, Référente Ateliers enfants — \r\nateliers-enfants@cap-harmonie-fictif.assoc\r\nDocument fictif — corpus de test RAG. Aucune donnée réelle.",
+        "ACTIVITÉS ENFANTS\r\nVue d'ensemble des activités proposées aux enfants\r\nAssociation Cap Harmonie — document fictif, corpus de test RAG.\r\nPrésentation\r\nL'Association Cap Harmonie propose de nombreuses activités destinées aux enfants, réparties dans plusieurs pôles : Culture & Musique, Environnement & Jardin, Sport & Bien-être et Ateliers enfants. Ce document rassemble une vue d'ensemble de ces activités, à destination des familles.\r\nVue d'ensemble par pôle\r\nPôle\r\n\tActivité\r\n\tJour & horaire\r\n\tPublic\r\n\tCulture & Musique\r\n\tMusique périscolaire\r\n\tLundi & jeudi, 16h30 – 17h30\r\n\tEnfants (périscolaire)\r\n\tCulture & Musique\r\n\tAtelier musique — groupe JSC\r\n\tMercredi, 09h00 – 11h30\r\n\tEnfants inscrits au JSC\r\n\tEnvironnement & Jardin\r\n\tEnvironnement périscolaire\r\n\tLundi & jeudi, 16h30 – 17h30\r\n\tEnfants (périscolaire)\r\n\tEnvironnement & Jardin\r\n\tAtelier plantation — groupe JSC\r\n\tMercredi, 10h00 – 12h00\r\n\tEnfants inscrits au JSC\r\n\tSport\r\n\tMultisport enfants\r\n\tMercredi, 14h00 – 16h00\r\n\tEnfants\r\n\tAteliers enfants\r\n\tDécouverte cuisine / jardinage / musique\r\n\tMercredi, 09h00 – 12h00 (rotation)\r\n\tEnfants inscrits à l'année\r\n\tAteliers enfants\r\n\tSport tous ensemble\r\n\tMercredi, 14h00 – 15h30\r\n\tEnfants inscrits à l'année\r\n\tAteliers enfants\r\n\tAtelier spécialisé instrument (batterie, piano, guitare)\r\n\tMercredi, 15h45 – 16h30\r\n\tEnfants inscrits, niveau avancé\r\n\tAteliers enfants\r\n\tCouture\r\n\tCréneau à définir\r\n\tEnfants inscrits à l'année\r\n\tAteliers enfants\r\n\tCréation bois\r\n\tCréneau à définir\r\n\tEnfants inscr"
+      ],
+      "retrieved": [
+        {
+          "name": "Demande d'inscription au périscolaire",
+          "drive_id": "19BZZHg9LKTgQnFZw6eyAeYJ_LgWHBjPxj_mgD61T9Q4",
+          "score": 0.8429,
+          "location": null
+        },
+        {
+          "name": "Demande d'inscription au périscolaire",
+          "drive_id": "19BZZHg9LKTgQnFZw6eyAeYJ_LgWHBjPxj_mgD61T9Q4",
+          "score": 0.8385,
+          "location": null
+        },
+        {
+          "name": "Inscription aux activités du mercredi",
+          "drive_id": "1jZDf0I2XjZ2XSVLaGrqs-p55Pt1_hzNZYu80T_xkkCA",
+          "score": 0.8311,
+          "location": null
+        },
+        {
+          "name": "Activites_Enfants",
+          "drive_id": "1PsqMjmd9GJYFkHKgKkpsEYK-8AdJWKfDCgpgVTO3lCM",
+          "score": 0.8271,
+          "location": null
+        },
+        {
+          "name": "Activites_Enfants",
+          "drive_id": "1PsqMjmd9GJYFkHKgKkpsEYK-8AdJWKfDCgpgVTO3lCM",
+          "score": 0.8268,
+          "location": null
+        }
+      ],
+      "hit": true,
+      "rr": 1.0,
+      "abstained": null,
+      "latency_ms": 2297,
+      "search_ms": 72,
+      "generation_ms": 2225,
+      "error": null,
+      "ragas": {
+        "faithfulness": null,
+        "answer_relevancy": null,
+        "context_precision": null,
+        "context_recall": null
+      }
+    },
+    {
+      "id": "intervention-01",
+      "question": "Quels types d'intervention peut-on demander dans une école ?",
+      "reference": "Maintenance du bâtiment, électricité, plomberie ou chauffage, mobilier ou équipement de classe, matériel informatique, sécurité, entretien ou propreté, intervenant extérieur, ou autre.",
+      "answerable": true,
+      "expected_docs": [
+        "Demande d'intervention à l'école"
+      ],
+      "answer": "D'après les extraits fournis, voici les types d'interventions que l'on peut demander dans une école :\n\n1. **Interventions techniques** (maintenance ou sécurité) :\n   - Maintenance du bâtiment (toiture, porte, fenêtre, peinture, sol) [1]\n   - Électricité, plomberie ou chauffage [1]\n   - Mobilier ou équipement de classe [1]\n   - Matériel informatique ou numérique [1]\n   - Sécurité (alarme, issue de secours, risque pour les élèves) [1]\n   - Entretien ou propreté des locaux [1]\n\n2. **Intervenants extérieurs auprès des élèves** (à préciser dans la section 6 du formulaire) [1] :\n   - Activités liées à la culture, au sport ou à d'autres thèmes (exemples non détaillés dans les extraits, mais mentionnés dans [4] et [5] comme ateliers de sensibilisation musicale et environnementale).\n\n3. **Autres interventions** (à préciser dans la case \"Autre\" du formulaire) [1].\n\nLes extraits [4] et [5] précisent aussi que l'association **Cap Harmonie** propose des interventions spécifiques comme :\n   - Ateliers de découverte instrumentale et chant (musique) [5]\n   - Sensibilisation au tri des déchets, au jardinage et à l'écologie (environnement) [5]\n   - Médiation périscolaire pendant les pauses méridiennes [5].\n\nCependant, ces dernières sont organisées dans le cadre de conventions annuelles avec des écoles partenaires et ne sont pas des demandes générales.",
+      "contexts": [
+        "Demande d'intervention à l'école\r\nFormulaire à compléter pour demander une intervention dans une école : intervention technique (maintenance, sécurité, matériel) ou venue d'un intervenant extérieur (animation, sport, culture). Modèle à adapter : les éléments entre crochets [ ] sont à personnaliser.\r\n1. Demandeur\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tFonction\r\n\t\r\n\r\n\tÉcole\r\n\t\r\n\r\n\tTéléphone\r\n\t\r\n\r\n\tAdresse e-mail\r\n\t\r\n\r\n\tDate de la demande\r\n\t\r\n\r\n\t2. Type d'intervention\r\n☐ Maintenance du bâtiment (toiture, porte, fenêtre, peinture, sol)\r\n☐ Électricité, plomberie ou chauffage\r\n☐ Mobilier ou équipement de classe\r\n☐ Matériel informatique ou numérique\r\n☐ Sécurité (alarme, issue de secours, risque pour les élèves)\r\n☐ Entretien ou propreté des locaux\r\n☐ Intervenant extérieur auprès des élèves (remplir la section 6)\r\n☐ Autre : ……………………\r\n3. Lieu concerné\r\nChamp\r\n\tÀ compléter\r\n\tBâtiment\r\n\t\r\n\r\n\tSalle ou zone\r\n\t\r\n\r\n\tÉtage\r\n\t\r\n\r\n\t4. Description de la demande\r\nDécrivez le problème constaté ou l'intervention souhaitée, depuis quand, et les conséquences éventuelles pour les élèves ou le personnel.\r\nChamp\r\n\tÀ compléter\r\n\tDescription\r\n\t\r\n\r\n\tConstaté depuis le\r\n\t\r\n\r\n\tPhotos jointes\r\n\t☐ Oui ☐ Non\r\n\t5.",
+        "rvention souhaitée, depuis quand, et les conséquences éventuelles pour les élèves ou le personnel.\r\nChamp\r\n\tÀ compléter\r\n\tDescription\r\n\t\r\n\r\n\tConstaté depuis le\r\n\t\r\n\r\n\tPhotos jointes\r\n\t☐ Oui ☐ Non\r\n\t5. Urgence et disponibilités\r\n☐ Urgente : danger pour les personnes ou activité impossible\r\n☐ Normale : gêne l'activité mais sans danger\r\n☐ Planifiable : peut attendre une date convenue\r\nChamp\r\n\tÀ compléter\r\n\tDate souhaitée\r\n\t\r\n\r\n\tCréneaux possibles\r\n\t\r\n\r\n\tIntervention possible en présence des élèves\r\n\t☐ Oui ☐ Non (hors temps scolaire)\r\n\tPersonne à contacter sur place\r\n\t\r\n\r\n\t6. Intervenant extérieur (si concerné)\r\nChamp\r\n\tÀ compléter\r\n\tNom de l'intervenant ou de l'organisme\r\n\t\r\n\r\n\tThème ou activité\r\n\t\r\n\r\n\tClasses concernées\r\n\t\r\n\r\n\tNombre d'élèves\r\n\t\r\n\r\n\tDate et horaires\r\n\t\r\n\r\n\tJustificatifs fournis (assurance, agrément)\r\n\t☐ Oui ☐ Non\r\n\t7. Validation\r\n\r\n\r\n\tDemandeur\r\n\tDirection de l'école\r\n\tService destinataire\r\n\tDate\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tAvis\r\n\t\r\n\r\n\t☐ Favorable ☐ Défavorable\r\n\t☐ Accepté ☐ Refusé\r\n\tSignature\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t8. Cadre réservé au service\r\nChamp\r\n\tÀ compléter\r\n\tNuméro de la demande\r\n\t\r\n\r\n\tReçue le\r\n\t\r\n\r\n\tPrise en charge par\r\n\t\r\n\r\n\tIntervention réalisée le\r\n\t\r\n\r\n\tObservations\r\n\t\r\n\r\n\t9.",
+        "nature\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t8. Cadre réservé au service\r\nChamp\r\n\tÀ compléter\r\n\tNuméro de la demande\r\n\t\r\n\r\n\tReçue le\r\n\t\r\n\r\n\tPrise en charge par\r\n\t\r\n\r\n\tIntervention réalisée le\r\n\t\r\n\r\n\tObservations\r\n\t\r\n\r\n\t9. Informations pratiques [à compléter]\r\n* Envoi du formulaire : [adresse e-mail, guichet ou outil de suivi].\r\n* Délai de traitement indicatif : urgente [délai], normale [délai], planifiable [délai].\r\n* En cas de danger immédiat, prévenir sans attendre : [numéro d'urgence du service].\r\n* Une demande d'intervenant extérieur doit être déposée [nombre] jours avant la date prévue.",
+        "tution collective et rangement\r\n\tÉtablissements partenaires\r\nLes interventions sont organisées dans le cadre de conventions annuelles signées avec les établissements suivants (liste fictive, non exhaustive) :\r\n* École primaire Les Flamboyants\r\n* École primaire La Clairière\r\n* Collège Les Bambous\r\nModalités\r\nChaque établissement partenaire signe une convention annuelle avec l'association, précisant le calendrier des interventions, les classes concernées et les modalités pratiques. Le calendrier est établi en début d'année scolaire avec la direction de chaque établissement.\r\nContact\r\nStéphanie Fontaine, Coordinatrice relations écoles — \r\necoles-mediation@cap-harmonie-fictif.assoc\r\nDocument fictif — corpus de test RAG. Aucune donnée réelle.",
+        "INTERVENTIONS EN MILIEU SCOLAIRE\r\nPôle Écoles & médiation\r\nAssociation Cap Harmonie — document fictif, corpus de test RAG.\r\nPrésentation du pôle\r\nLe pôle Écoles & médiation organise des interventions pendant les pauses méridiennes et entretient les relations avec les établissements scolaires partenaires. Il propose des ateliers de sensibilisation musicale et environnementale directement au sein des écoles.\r\nNotre équipe\r\nNom\r\n\tFonction\r\n\tStéphanie Fontaine\r\n\tCoordinatrice relations écoles\r\n\tAurélie Payet\r\n\tIntervenante scolaire musique\r\n\tFranck Morel\r\n\tIntervenant scolaire environnement\r\n\tGrégory Hoarau\r\n\tMédiateur activités\r\n\tNos interventions\r\n* Intervention musicale : ateliers de découverte instrumentale et chant, animés par Aurélie Payet, proposés pendant la pause méridienne.\r\n* Intervention environnement : sensibilisation au tri des déchets, au jardinage et à l'écologie, animée par Franck Morel.\r\n* Médiation périscolaire : accompagnement des enfants sur les temps de pause méridienne, assuré par Grégory Hoarau, sous la coordination de Stéphanie Fontaine.\r\nDéroulé type d'une intervention\r\nHoraire\r\n\tÉtape\r\n\t12h00 – 12h15\r\n\tAccueil des enfants et présentation du thème du jour\r\n\t12h15 – 12h45\r\n\tActivité principale (atelier musique ou atelier environnement)\r\n\t12h45 – 13h00\r\n\tRestitution collective et rangement\r\n\tÉtablissements partenaires\r\nLes interventions sont organisées dans le cadre de conventions annuelles signées avec les établissements suivants (liste fictive, non exhau"
+      ],
+      "retrieved": [
+        {
+          "name": "Demande d'intervention à l'école",
+          "drive_id": "1uZqBECqTlInkZklACOmw-a6S_BhlkzPLF677lJdnsAE",
+          "score": 0.8563,
+          "location": null
+        },
+        {
+          "name": "Demande d'intervention à l'école",
+          "drive_id": "1uZqBECqTlInkZklACOmw-a6S_BhlkzPLF677lJdnsAE",
+          "score": 0.8544,
+          "location": null
+        },
+        {
+          "name": "Demande d'intervention à l'école",
+          "drive_id": "1uZqBECqTlInkZklACOmw-a6S_BhlkzPLF677lJdnsAE",
+          "score": 0.8428,
+          "location": null
+        },
+        {
+          "name": "Interventions_Ecoles",
+          "drive_id": "1InsX-_iC7zrBIia9rMcrxmb-LCJNzjuCx-5QmpQnp0M",
+          "score": 0.8384,
+          "location": null
+        },
+        {
+          "name": "Interventions_Ecoles",
+          "drive_id": "1InsX-_iC7zrBIia9rMcrxmb-LCJNzjuCx-5QmpQnp0M",
+          "score": 0.8328,
+          "location": null
+        }
+      ],
+      "hit": true,
+      "rr": 1.0,
+      "abstained": null,
+      "latency_ms": 2656,
+      "search_ms": 100,
+      "generation_ms": 2556,
+      "error": null,
+      "ragas": {
+        "faithfulness": null,
+        "answer_relevancy": null,
+        "context_precision": null,
+        "context_recall": null
+      }
+    },
+    {
+      "id": "mercredi-01",
+      "question": "Quelles activités sont proposées le mercredi ?",
+      "reference": "Sport et jeux collectifs, arts plastiques, théâtre et expression, musique, découverte scientifique, jeux de société, cuisine, nature et jardinage (exemples à adapter).",
+      "answerable": true,
+      "expected_docs": [
+        "Inscription aux activités du mercredi"
+      ],
+      "answer": "D'après l'extrait [1] (source : **Activites_Enfants**), voici les activités proposées **le mercredi** par l'Association Cap Harmonie :\n\n- **Pôle Environnement & Jardin** :\n  - Atelier plantation (groupe JSC) – *10h00 – 12h00* (enfants inscrits au JSC).\n\n- **Pôle Sport** :\n  - Multisport enfants – *14h00 – 16h00* (tous enfants).\n\n- **Pôle Ateliers enfants** (rotation ou activités spécifiques) :\n  - Découverte cuisine / jardinage / musique – *09h00 – 12h00* (enfants inscrits à l'année).\n  - Sport tous ensemble – *14h00 – 15h30* (enfants inscrits à l'année).\n  - Atelier spécialisé instrument (batterie, piano, guitare) – *15h45 – 16h30* (enfants inscrits, niveau avancé).\n\n*Note* : Les activités \"Couture\" et \"Création bois\" ont un créneau à définir, donc elles ne sont pas précisées pour le mercredi dans cet extrait.",
+      "contexts": [
+        "ACTIVITÉS ENFANTS\r\nVue d'ensemble des activités proposées aux enfants\r\nAssociation Cap Harmonie — document fictif, corpus de test RAG.\r\nPrésentation\r\nL'Association Cap Harmonie propose de nombreuses activités destinées aux enfants, réparties dans plusieurs pôles : Culture & Musique, Environnement & Jardin, Sport & Bien-être et Ateliers enfants. Ce document rassemble une vue d'ensemble de ces activités, à destination des familles.\r\nVue d'ensemble par pôle\r\nPôle\r\n\tActivité\r\n\tJour & horaire\r\n\tPublic\r\n\tCulture & Musique\r\n\tMusique périscolaire\r\n\tLundi & jeudi, 16h30 – 17h30\r\n\tEnfants (périscolaire)\r\n\tCulture & Musique\r\n\tAtelier musique — groupe JSC\r\n\tMercredi, 09h00 – 11h30\r\n\tEnfants inscrits au JSC\r\n\tEnvironnement & Jardin\r\n\tEnvironnement périscolaire\r\n\tLundi & jeudi, 16h30 – 17h30\r\n\tEnfants (périscolaire)\r\n\tEnvironnement & Jardin\r\n\tAtelier plantation — groupe JSC\r\n\tMercredi, 10h00 – 12h00\r\n\tEnfants inscrits au JSC\r\n\tSport\r\n\tMultisport enfants\r\n\tMercredi, 14h00 – 16h00\r\n\tEnfants\r\n\tAteliers enfants\r\n\tDécouverte cuisine / jardinage / musique\r\n\tMercredi, 09h00 – 12h00 (rotation)\r\n\tEnfants inscrits à l'année\r\n\tAteliers enfants\r\n\tSport tous ensemble\r\n\tMercredi, 14h00 – 15h30\r\n\tEnfants inscrits à l'année\r\n\tAteliers enfants\r\n\tAtelier spécialisé instrument (batterie, piano, guitare)\r\n\tMercredi, 15h45 – 16h30\r\n\tEnfants inscrits, niveau avancé\r\n\tAteliers enfants\r\n\tCouture\r\n\tCréneau à définir\r\n\tEnfants inscrits à l'année\r\n\tAteliers enfants\r\n\tCréation bois\r\n\tCréneau à définir\r\n\tEnfants inscr",
+        "Inscription aux activités du mercredi\r\nFormulaire à compléter par le responsable légal de l'enfant. Modèle à adapter : les activités proposées, les horaires et les tarifs sont des exemples, et les éléments entre crochets [ ] sont à personnaliser.\r\nPériode concernée : ☐ Trimestre 1 ☐ Trimestre 2 ☐ Trimestre 3 ☐ Année complète (année scolaire 20…… / 20……)\r\n1. Responsable légal\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tLien avec l'enfant\r\n\t\r\n\r\n\tAdresse\r\n\t\r\n\r\n\tTéléphone\r\n\t\r\n\r\n\tAdresse e-mail\r\n\t\r\n\r\n\tSecond responsable (nom, téléphone)\r\n\t\r\n\r\n\t2. Enfant\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tDate de naissance\r\n\t\r\n\r\n\tÉcole\r\n\t\r\n\r\n\tClasse\r\n\t\r\n\r\n\t3. Formule choisie\r\n☐ Matin : [horaires]\r\n☐ Après-midi : [horaires]\r\n☐ Journée complète : [horaires]\r\nRepas du mercredi : ☐ Avec repas (cantine) ☐ Sans repas\r\nFréquence : ☐ Tous les mercredis ☐ Dates précises : ……………………\r\n4. Activités souhaitées\r\nClassez vos choix de 1 à 3 (1 = premier choix). L'inscription dépend des places disponibles.\r\nActivité (exemples à adapter)\r\n\tChoix (1, 2 ou 3)\r\n\tSport et jeux collectifs\r\n\t\r\n\r\n\tArts plastiques\r\n\t\r\n\r\n\tThéâtre et expression\r\n\t\r\n\r\n\tMusique\r\n\t\r\n\r\n\tDécouverte scientifique\r\n\t\r\n\r\n\tJeux de société\r\n\t\r\n\r\n\tCuisine\r\n\t\r\n\r\n\tNature et jardinage\r\n\t\r\n\r\n\t5.",
+        "n de quotient familial ou avis d'imposition.\r\n* Attestation d'assurance extrascolaire.\r\n* Certificat médical pour les activités sportives, si la structure l'exige.\r\n* Copie du PAI, le cas échéant.\r\n9. Engagement et signature\r\nJe certifie l'exactitude des informations fournies, m'engage à signaler toute absence de mon enfant avant [heure] et à respecter le règlement des activités.\r\nFait à\r\n\tLe\r\n\tSignature du responsable légal\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t10. Informations pratiques [à compléter]\r\n* Date limite d'inscription : [date].\r\n* Annulation ou modification : prévenir [nombre] jours à l'avance.\r\n* Lieu d'accueil le mercredi : [adresse].\r\n* Dépôt du dossier : [guichet, adresse e-mail ou portail famille].\r\n* Liste d'attente : en cas de place insuffisante, la famille est prévenue par [moyen de contact].",
+        "INTERVENTIONS EN MILIEU SCOLAIRE\r\nPôle Écoles & médiation\r\nAssociation Cap Harmonie — document fictif, corpus de test RAG.\r\nPrésentation du pôle\r\nLe pôle Écoles & médiation organise des interventions pendant les pauses méridiennes et entretient les relations avec les établissements scolaires partenaires. Il propose des ateliers de sensibilisation musicale et environnementale directement au sein des écoles.\r\nNotre équipe\r\nNom\r\n\tFonction\r\n\tStéphanie Fontaine\r\n\tCoordinatrice relations écoles\r\n\tAurélie Payet\r\n\tIntervenante scolaire musique\r\n\tFranck Morel\r\n\tIntervenant scolaire environnement\r\n\tGrégory Hoarau\r\n\tMédiateur activités\r\n\tNos interventions\r\n* Intervention musicale : ateliers de découverte instrumentale et chant, animés par Aurélie Payet, proposés pendant la pause méridienne.\r\n* Intervention environnement : sensibilisation au tri des déchets, au jardinage et à l'écologie, animée par Franck Morel.\r\n* Médiation périscolaire : accompagnement des enfants sur les temps de pause méridienne, assuré par Grégory Hoarau, sous la coordination de Stéphanie Fontaine.\r\nDéroulé type d'une intervention\r\nHoraire\r\n\tÉtape\r\n\t12h00 – 12h15\r\n\tAccueil des enfants et présentation du thème du jour\r\n\t12h15 – 12h45\r\n\tActivité principale (atelier musique ou atelier environnement)\r\n\t12h45 – 13h00\r\n\tRestitution collective et rangement\r\n\tÉtablissements partenaires\r\nLes interventions sont organisées dans le cadre de conventions annuelles signées avec les établissements suivants (liste fictive, non exhau",
+        "t\r\n\tEMP-049\r\n\tValérie Hoarau\r\n\tAgente de sécurité\r\n\tSécurité & maintenance\r\n\tPatrick Payet\r\n\tEMP-050\r\n\tStéphane Rivière\r\n\tAgent de maintenance et sécurité\r\n\tSécurité & maintenance\r\n\tPatrick Payet\r\n\t3. Pôles de l'organisation\r\nPôle\r\n\tMission principale\r\n\tDirection\r\n\tPilotage général, décisions stratégiques et coordination des activités.\r\n\tAdministration & finances\r\n\tGestion administrative, comptabilité, ressources humaines et secrétariat.\r\n\tÉvénementiel\r\n\tPréparation, coordination, production et logistique des grands et petits événements.\r\n\tAnimation musicale\r\n\tAteliers musicaux et interventions liées à la musique.\r\n\tAnimation culturelle\r\n\tActivités culturelles, patrimoine et programmation culturelle.\r\n\tEnvironnement\r\n\tSensibilisation à l'environnement et ateliers pédagogiques.\r\n\tSport & bien-être\r\n\tActivités sportives, massage et prestations de bien-être.\r\n\tCoiffure & beauté\r\n\tPrestations de coiffure et d'esthétique proposées dans le cadre des activités.\r\n\tAteliers enfants\r\n\tCuisine, piano, guitare, batterie, couture, création bois et activités diverses.\r\n\tÉcoles & médiation\r\n\tOrganisation des interventions pendant les pauses méridiennes et relations avec les établissements scolaires.\r\n\tJardin\r\n\tEntretien du jardin, activités pédagogiques et vente de produits aux adhérents.\r\n\tCommunication & numérique\r\n\tCommunication, supports visuels, outils numériques et informatique.\r\n\tSécurité & maintenance\r\n\tMaintenance des installations, assistance technique et sécurité.\r\n\t4."
+      ],
+      "retrieved": [
+        {
+          "name": "Activites_Enfants",
+          "drive_id": "1PsqMjmd9GJYFkHKgKkpsEYK-8AdJWKfDCgpgVTO3lCM",
+          "score": 0.8036,
+          "location": null
+        },
+        {
+          "name": "Inscription aux activités du mercredi",
+          "drive_id": "1jZDf0I2XjZ2XSVLaGrqs-p55Pt1_hzNZYu80T_xkkCA",
+          "score": 0.803,
+          "location": null
+        },
+        {
+          "name": "Inscription aux activités du mercredi",
+          "drive_id": "1jZDf0I2XjZ2XSVLaGrqs-p55Pt1_hzNZYu80T_xkkCA",
+          "score": 0.7983,
+          "location": null
+        },
+        {
+          "name": "Interventions_Ecoles",
+          "drive_id": "1InsX-_iC7zrBIia9rMcrxmb-LCJNzjuCx-5QmpQnp0M",
+          "score": 0.7957,
+          "location": null
+        },
+        {
+          "name": "organigramme_societe_fictive_50_employes (1)",
+          "drive_id": "1AVQk1-sCiIl6OVO192Zfl8O2PKLH443rQrrhnkhiqtw",
+          "score": 0.795,
+          "location": null
+        }
+      ],
+      "hit": true,
+      "rr": 0.5,
+      "abstained": null,
+      "latency_ms": 3119,
+      "search_ms": 72,
+      "generation_ms": 3046,
+      "error": null,
+      "ragas": {
+        "faithfulness": null,
+        "answer_relevancy": null,
+        "context_precision": null,
+        "context_recall": null
+      }
+    },
+    {
+      "id": "hors-sujet-01",
+      "question": "Quel est le budget annuel de la mairie ?",
+      "reference": "",
+      "answerable": false,
+      "expected_docs": [],
+      "answer": "Je ne vois **aucun extrait** dans les documents fournis qui mentionne le budget annuel de la mairie. Les informations disponibles concernent uniquement **Cap Harmonie** (association) et ses activités, dépenses, événements ou effectifs internes.\n\nSi tu cherches des données sur le budget de la mairie, il faudrait consulter des sources spécifiques à celle-ci (rapports municipaux, budgets publics, etc.).",
+      "contexts": [
+        "Ateliers de sensibilisation, jardin pédagogique, ventes de récolte.\nCoiffure & Beauté\nSalon de coiffure et cabine d'esthétique intégrés au bâtiment.\nCap Harmonie — Rapport d'activité annuel 2026\n4\n4\n\nTemps fort de l'année\nMarche Tous Ensemble, organisée le 15 novembre 2026, a rassemblé environ 350 participants autour d'une marche, d'un village d'animations et d'un concert de clôture, pour un solde prévisionnel positif de 350 €.\nCap Harmonie — Rapport d'activité annuel 2026\n5\n5\n\nSynthèse des dépenses par pôle\nPôle\nDépenses suivies sur l'année\nCulture & Musique (achats + réparations matériel)\n945,00 €\nEnvironnement & Jardin (achats matériel jardin)\n249,00 €\nSport (fournitures + entretien salle + mini-golf)\n1 008,00 €\nBien-être (produits + entretien spa/jacuzzi/sauna)\n960,00 €\nÉvénementiel (Marche Tous Ensemble)\n2 160,00 €\nHors cotisations, subventions et charges de personnel, non détaillées dans cette synthèse.\nCap Harmonie — Rapport d'activité annuel 2026\n6\n6\n\nMerci à tous nos adhérents et partenaires\nAssociation Cap Harmonie — Rapport d'activité 2026\ncontact@cap-harmonie-fictif.assoc — Document fictif, corpus de test RAG\n7",
+        "MARCHE TOUS ENSEMBLE\nBilan de l'édition 2026\nDimanche 15 novembre 2026 — Complexe Cap Harmonie\nAssociation Cap Harmonie — document fictif, corpus de test RAG\n1\n\nRésumé de l'événement\nL'édition 2026 de Marche Tous Ensemble a réuni marcheurs, familles et adhérents autour d'une marche accessible, d'un village d'animations et d'un concert de clôture. L'événement a mobilisé l'ensemble des pôles de l'association.\n350\nparticipants estimés\n2\nparcours proposés\n6\nstands & animations\nCap Harmonie — Bilan Marche Tous Ensemble 2026\n2\n2\n\nProgramme réalisé\nHoraire\nMoment\n07h00\nAccueil et retrait des dossards\n08h00\nDépart des marches (2 parcours)\n10h00 – 13h00\nVillage d'animations et structure gonflable\n14h00 – 16h00\nConcert de clôture\nCap Harmonie — Bilan Marche Tous Ensemble 2026\n3\n3\n\nBilan financier\nPoste\nMontant\nRecettes billetterie (estimation)\n2 510,00 €\nDépenses (structure, sonorisation, bus, sécurité...)\n2 160,00 €\nSolde prévisionnel\n+ 350,00 €\nDétail complet des dépenses et recettes disponible dans le classeur budget dédié.\nCap Harmonie — Bilan Marche Tous Ensemble 2026\n4\n4\n\nPoints forts & axes d'amélioration\nPoints forts : forte participation familiale, bonne coordination entre pôles, météo favorable\nAxes d'amélioration : renforcer la signalétique des parcours, prévoir davantage de bénévoles au stand buvette\nRetour très positif sur le concert de clôture et la structure gonflable\nCap Harmonie — Bilan Marche Tous Ensemble 2026\n5\n5",
+        "di, 15h45 – 16h30\r\n\tEnfants inscrits, niveau avancé\r\n\tAteliers enfants\r\n\tCouture\r\n\tCréneau à définir\r\n\tEnfants inscrits à l'année\r\n\tAteliers enfants\r\n\tCréation bois\r\n\tCréneau à définir\r\n\tEnfants inscrits à l'année\r\n\tTarifs\r\nActivité\r\n\tTarif\r\n\tAteliers enfants (mercredi, à l'année)\r\n\t30 €/an par enfant\r\n\tMusique et environnement périscolaire\r\n\tInclus dans l'adhésion associative\r\n\tMultisport enfants (mercredi après-midi)\r\n\tÀ la séance (tarif à définir)\r\n\tAtelier plantation — groupe JSC\r\n\tGratuit pour les enfants inscrits au JSC\r\n\tEncadrement\r\nChaque activité est encadrée par un animateur ou une animatrice référent(e), rattaché(e) au pôle concerné :\r\n* Culture & Musique : Fabrice Morel, Nathalie Hoarau, Candy Azéma\r\n* Environnement & Jardin : Olivier Rivière, Ludivine Morel\r\n* Sport : Mickaël Rivière\r\n* Ateliers enfants : Pauline Fontaine (référente), Mathieu Payet, Lucie Hoarau, Romain Rivière, Chloé Payet, Damien Morel\r\nInscription\r\nLes inscriptions se font auprès du secrétariat de l'association, sur présentation d'un justificatif d'identité de l'enfant. Le règlement de la cotisation annuelle des Ateliers enfants (30 €) vaut inscription pour l'année scolaire en cours.\r\nContact\r\nPauline Fontaine, Référente Ateliers enfants — \r\nateliers-enfants@cap-harmonie-fictif.assoc\r\nDocument fictif — corpus de test RAG. Aucune donnée réelle.",
+        "Net Propreté Réunion\n6 Rue de l'Entretien, 97400 Saint-Denis\nFACTURE\nN° facture : FACT-ENT-SALLE-2026-001\nDate d'émission : 10/01/2026\nDate d'échéance : 24/01/2026\nFacturé à :\nAssociation Cap Harmonie\n12 Chemin des Hirondelles\n97400 Saint-Denis, La Réunion\nSIRET fictif : 000 000 000 00000\nDésignation\nQté\nPrix unit. (€)\nTotal (€)\nNettoyage et désinfection mensuelle — salle de sport\n1\n150,00\n150,00\nRévision et graissage des appareils de musculation\n1\n90,00\n90,00\nTotal TTC :\n240,00 €\nMode de règlement : Virement bancaire\nDocument fictif — corpus de test RAG. Aucune donnée réelle.",
+        "vironnement\r\n├── Sport & bien-être  →  Sébastien Hoarau – Responsable du pôle\r\n├── Coiffure & beauté  →  Sandrine Hoarau – Référente coiffure & beauté\r\n├── Ateliers enfants  →  Pauline Fontaine – Référente ateliers enfants\r\n├── Écoles & médiation  →  Stéphanie Fontaine – Coordinatrice relations écoles\r\n├── Jardin  →  Bernard Payet – Responsable jardin\r\n├── Communication & numérique  →  Hélène Rivière – Responsable communication\r\n└── Sécurité & maintenance  →  Patrick Payet – Responsable maintenance\r\n2. Répartition des 50 employés\r\nID\r\n\tNom fictif\r\n\tFonction\r\n\tPôle\r\n\tResponsable\r\n\tEMP-001\r\n\tClaire Fontaine\r\n\tDirectrice\r\n\tDirection\r\n\t—\r\n\tEMP-002\r\n\tJulien Hoarau\r\n\tAssistante de direction\r\n\tDirection\r\n\tClaire Fontaine\r\n\tEMP-003\r\n\tSophie Payet\r\n\tResponsable administrative\r\n\tAdministration & finances\r\n\tClaire Fontaine\r\n\tEMP-004\r\n\tNicolas Rivière\r\n\tComptable\r\n\tAdministration & finances\r\n\tSophie Payet\r\n\tEMP-005\r\n\tÉlodie Maillot\r\n\tAssistante comptable\r\n\tAdministration & finances\r\n\tSophie Payet\r\n\tEMP-006\r\n\tThomas Dijoux\r\n\tGestionnaire RH\r\n\tAdministration & finances\r\n\tSophie Payet\r\n\tEMP-007\r\n\tMélanie Rivière\r\n\tSecrétaire administrative\r\n\tAdministration & finances\r\n\tSophie Payet\r\n\tEMP-008\r\n\tKarim Fontaine\r\n\tResponsable événementiel\r\n\tÉvénementiel\r\n\tClaire Fontaine\r\n\tEMP-009\r\n\tLaura Hoarau\r\n\tCoordinatrice événements\r\n\tÉvénementiel\r\n\tKarim Fontaine\r\n\tEMP-010\r\n\tDavid Payet\r\n\tCoordinateur logistique\r\n\tÉvénementiel\r\n\tKarim Fontaine\r\n\tEMP-011\r\n\tAnaïs Morel\r\n\tChargée de production événementiell"
+      ],
+      "retrieved": [
+        {
+          "name": "Rapport_Activite_Annuel",
+          "drive_id": "1Uceewk5jE6dzKsJNJlAYEkbfy8Beql1DaTpyx52zMQw",
+          "score": 0.8104,
+          "location": null
+        },
+        {
+          "name": "Bilan_Evenement_Marche_Tous_Ensemble",
+          "drive_id": "1fpZQ__nShQtXcI3wnk2xTjC02ULQe_t2IPCAVmLAngE",
+          "score": 0.8088,
+          "location": null
+        },
+        {
+          "name": "Activites_Enfants",
+          "drive_id": "1PsqMjmd9GJYFkHKgKkpsEYK-8AdJWKfDCgpgVTO3lCM",
+          "score": 0.8051,
+          "location": null
+        },
+        {
+          "name": "Facture_EntretienSalle_2026-001.pdf",
+          "drive_id": "1OdiXruGHxSyHZmZ10pluzkq0LTfcoUyC",
+          "score": 0.8025,
+          "location": "page 1"
+        },
+        {
+          "name": "organigramme_societe_fictive_50_employes (1)",
+          "drive_id": "1AVQk1-sCiIl6OVO192Zfl8O2PKLH443rQrrhnkhiqtw",
+          "score": 0.8012,
+          "location": null
+        }
+      ],
+      "hit": null,
+      "rr": null,
+      "abstained": true,
+      "latency_ms": 1294,
+      "search_ms": 99,
+      "generation_ms": 1195,
+      "error": null,
+      "ragas": {
+        "faithfulness": null,
+        "answer_relevancy": null,
+        "context_precision": null,
+        "context_recall": null
+      }
+    },
+    {
+      "id": "hors-sujet-02",
+      "question": "Quel est le tarif exact de la cantine ?",
+      "reference": "",
+      "answerable": false,
+      "expected_docs": [],
+      "answer": "Je ne vois pas d'extrait qui mentionne explicitement le **tarif exact de la cantine**. Les documents fournis ne contiennent aucune information sur les prix liés à la restauration scolaire ou à la cantine.\n\nSeuls les tarifs pour les activités sportives (ex. : 80 €/semaine pour le coaching encadré) ou les coûts d'entretien sont mentionnés.",
+      "contexts": [
+        "Colonnes: N°, Date, Intervention, Coût (€), N° facture\nNombre de lignes: 3\nExemples:\nN°: 1 | Date: 15/01/2026 | Intervention: Tonte et entretien des pelouses | Coût (€): 120 | N° facture: FACT-ENT-GOLF-2026-001\nN°: 2 | Date: 15/01/2026 | Intervention: Peinture et réparation des obstacles | Coût (€): 95 | N° facture: FACT-ENT-GOLF-2026-001\nIntervention: TOTAL | Coût (€): 215",
+        "Net Propreté Réunion\n6 Rue de l'Entretien, 97400 Saint-Denis\nFACTURE\nN° facture : FACT-ENT-SALLE-2026-001\nDate d'émission : 10/01/2026\nDate d'échéance : 24/01/2026\nFacturé à :\nAssociation Cap Harmonie\n12 Chemin des Hirondelles\n97400 Saint-Denis, La Réunion\nSIRET fictif : 000 000 000 00000\nDésignation\nQté\nPrix unit. (€)\nTotal (€)\nNettoyage et désinfection mensuelle — salle de sport\n1\n150,00\n150,00\nRévision et graissage des appareils de musculation\n1\n90,00\n90,00\nTotal TTC :\n240,00 €\nMode de règlement : Virement bancaire\nDocument fictif — corpus de test RAG. Aucune donnée réelle.",
+        "Colonnes: Jour, Horaire, Activité, Public visé, Tarif, Intervenant(e), Lieu, Effectif prévu\nNombre de lignes: 8\nExemples:\nJour: Lundi | Horaire: 07h00 – 09h00 | Activité: Adhésion sport semaine (coaching encadré) | Public visé: Adultes — adhérents semaine | Tarif: 80 €/semaine | Intervenant(e): Sébastien Hoarau | Lieu: Salle de sport | Effectif prévu: 15\nJour: Mardi | Horaire: 07h00 – 09h00 | Activité: Adhésion sport semaine (coaching encadré) | Public visé: Adultes — adhérents semaine | Tarif: 80 €/semaine | Intervenant(e): Amandine Payet | Lieu: Salle de sport | Effectif prévu: 15\nJour: Mercredi | Horaire: 07h00 – 09h00 | Activité: Adhésion sport semaine (coaching encadré) | Public visé: Adultes — adhérents semaine | Tarif: 80 €/semaine | Intervenant(e): Loïc Morel | Lieu: Salle de sport | Effectif prévu: 15",
+        "Demande d'inscription au périscolaire\r\nFormulaire à compléter par le responsable légal de l'enfant pour l'année scolaire 20…… / 20……. Modèle à adapter : les éléments entre crochets [ ] sont à personnaliser. Les activités du mercredi font l'objet d'un formulaire distinct.\r\n1. Responsable légal\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tLien avec l'enfant\r\n\t\r\n\r\n\tAdresse\r\n\t\r\n\r\n\tTéléphone\r\n\t\r\n\r\n\tAdresse e-mail\r\n\t\r\n\r\n\tSecond responsable (nom, téléphone)\r\n\t\r\n\r\n\t2. Enfant\r\nChamp\r\n\tÀ compléter\r\n\tNom et prénom\r\n\t\r\n\r\n\tDate de naissance\r\n\t\r\n\r\n\tÉcole\r\n\t\r\n\r\n\tClasse\r\n\t\r\n\r\n\t3. Services demandés\r\n☐ Accueil du matin\r\n☐ Restauration scolaire (cantine)\r\n☐ Accueil du soir (garderie)\r\n☐ Étude surveillée\r\nFréquence : ☐ Régulière (tableau ci-dessous) ☐ Occasionnelle (dates : ……………………)\r\nJour\r\n\tMatin\r\n\tCantine\r\n\tSoir\r\n\tÉtude\r\n\tLundi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\tMardi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\tJeudi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\tVendredi\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t☐\r\n\t4. Santé de l'enfant\r\nChamp\r\n\tÀ compléter\r\n\tAllergies ou intolérances\r\n\t\r\n\r\n\tRégime alimentaire particulier\r\n\t\r\n\r\n\tProjet d'accueil individualisé (PAI)\r\n\t☐ Oui ☐ Non\r\n\tTraitement ou recommandations médicales\r\n\t\r\n\r\n\tMédecin traitant (nom, téléphone)\r\n\t\r\n\r\n\t5. Personnes autorisées à récupérer l'enfant\r\nNom et prénom\r\n\tLien avec l'enfant\r\n\tTéléphone\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\t\r\n\r\n\tUne pièce d'identité peut être demandée à la personne qui vient chercher l'enfant.\r\n6.",
+        "Colonnes: N°, Date, Intervention, Élément concerné, Coût (€), N° facture\nNombre de lignes: 3\nExemples:\nN°: 1 | Date: 10/01/2026 | Intervention: Nettoyage et désinfection mensuelle | Élément concerné: Salle de sport | Coût (€): 150 | N° facture: FACT-ENT-SALLE-2026-001\nN°: 2 | Date: 10/01/2026 | Intervention: Révision et graissage des appareils | Élément concerné: Équipements de musculation | Coût (€): 90 | N° facture: FACT-ENT-SALLE-2026-001\nÉlément concerné: TOTAL | Coût (€): 240"
+      ],
+      "retrieved": [
+        {
+          "name": "Planning_Sport",
+          "drive_id": "12I_twYyoWdZ6OK2nQ6FB6rX-uYa_MQptYA9eVlTUgaY",
+          "score": 0.8139,
+          "location": "feuille Entretien mini-golf"
+        },
+        {
+          "name": "Facture_EntretienSalle_2026-001.pdf",
+          "drive_id": "1OdiXruGHxSyHZmZ10pluzkq0LTfcoUyC",
+          "score": 0.81,
+          "location": "page 1"
+        },
+        {
+          "name": "Planning_Sport",
+          "drive_id": "12I_twYyoWdZ6OK2nQ6FB6rX-uYa_MQptYA9eVlTUgaY",
+          "score": 0.8094,
+          "location": "feuille Planning"
+        },
+        {
+          "name": "Demande d'inscription au périscolaire",
+          "drive_id": "19BZZHg9LKTgQnFZw6eyAeYJ_LgWHBjPxj_mgD61T9Q4",
+          "score": 0.809,
+          "location": null
+        },
+        {
+          "name": "Planning_Sport",
+          "drive_id": "12I_twYyoWdZ6OK2nQ6FB6rX-uYa_MQptYA9eVlTUgaY",
+          "score": 0.807,
+          "location": "feuille Entretien salle & matériel"
+        }
+      ],
+      "hit": null,
+      "rr": null,
+      "abstained": true,
+      "latency_ms": 1155,
+      "search_ms": 89,
+      "generation_ms": 1064,
+      "error": null,
+      "ragas": {
+        "faithfulness": null,
+        "answer_relevancy": null,
+        "context_precision": null,
+        "context_recall": null
+      }
+    }
+  ]
+}

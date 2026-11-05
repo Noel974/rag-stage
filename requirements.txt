@@ -1,4 +1,50 @@
-Flask
-Flask-Cors
+sentence-transformers==5.1.2
+
+# Framework web
+Flask==3.1.3
+flask-cors==6.0.5
+gunicorn
+
+# LangChain - pile 0.3
+langchain==0.3.27
+langchain-core==0.3.79
+langchain-community==0.3.31
+langchain-text-splitters==0.3.11
+
+# Integrations
+langchain-openai==0.3.35
+langchain-mistralai==0.2.12
+langchain-google-community==2.0.7
+langchain-google-vertexai==2.1.2
+
+# RAG Evaluation
+ragas==0.4.3
+
+# OpenAI
+openai
+
+# Google Cloud
+google-cloud-aiplatform
+
+# PostgreSQL
+psycopg2-binary==2.9.11
+SQLAlchemy
+
+# Configuration
 python-dotenv
-psutil
+pydantic
+pydantic-settings
+
+# HTTP
+requests
+httpx
+
+# Utilitaires
+numpy
+pandas
+tiktoken
+tenacity
+PyYAML
+orjson
+
+psutil==7.1.3

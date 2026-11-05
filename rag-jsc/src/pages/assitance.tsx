@@ -8,8 +8,9 @@ import remarkGfm from "remark-gfm";
 import {
   clearAnswer,
   sendQuestion,
-} from "../redux/features/ragSlice";
-import { useAppDispatch, useAppSelector } from "../redux/store/hoooks";
+} from "../redux";
+
+import { useAppDispatch, useAppSelector } from "../redux/store/hooks";
 
 const MAX_QUESTION_CHARS = 1000;
 

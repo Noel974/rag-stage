@@ -3,6 +3,8 @@ import time
 import logging
 from contextlib import contextmanager
 
+import re
+
 import psycopg2
 import requests
 from flask import Flask, request, jsonify
@@ -743,11 +745,12 @@ def get_metrics_history():
 # RAGAS EVALUATION API
 # ============================================================
 
+# ============================================================
+# CONFIGURATION RAGAS
+# ============================================================
+
 RAGAS_RESULTS_DIR = Path(
-    os.environ.get(
-        "RAGAS_RESULTS_DIR",
-        "/app/evaluation/results"
-    )
+    os.environ.get("RAGAS_RESULTS_DIR", "/app/results")
 )
 
 RAGAS_DATASET_PATH = Path(
@@ -755,6 +758,11 @@ RAGAS_DATASET_PATH = Path(
         "RAGAS_DATASET_PATH",
         "/app/evaluation/dataset.json"
     )
+)
+
+RAGAS_RESULTS_DIR.mkdir(
+    parents=True,
+    exist_ok=True
 )
 
 
@@ -850,6 +858,40 @@ def get_evaluation_dataset():
             "error": "Impossible de lire le dataset"
         }), 500
 
+@app.get("/api/evaluations/history")
+def evaluations_history():
+
+    results = []
+
+    for file in sorted(
+        RAGAS_RESULTS_DIR.glob("*.json"),
+        key=lambda f: f.stat().st_mtime
+    ):
+        try:
+            with file.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+
+            agg = data.get("aggregate", {})
+
+            results.append({
+                "id": file.stem,
+                "created_at": data.get("started_at"),
+                "hit_rate": agg.get("hit_rate"),
+                "mrr": agg.get("mrr"),
+                "faithfulness": agg.get("faithfulness"),
+                "answer_relevancy": agg.get("answer_relevancy"),
+                "context_precision": agg.get("context_precision"),
+                "context_recall": agg.get("context_recall"),
+                "avg_latency_ms": agg.get("avg_latency_ms"),
+            })
+
+        except Exception:
+            log.exception(
+                "Impossible de lire %s",
+                file.name
+            )
+
+    return jsonify(results)
 
 # ==========================================
 # RAGAS : Toutes les métriques
@@ -858,7 +900,11 @@ def get_evaluation_dataset():
 @app.get("/api/evaluations/metrics")
 def get_evaluation_metrics():
 
+    print("Dossier utilisé :", RAGAS_RESULTS_DIR.resolve())
+
     files = list(RAGAS_RESULTS_DIR.glob("*.json"))
+
+    print("Nombre de fichiers :", len(files))
 
     results = []
 
