@@ -44,5 +44,124 @@
     "id": "hors-sujet-02",
     "question": "Quel est le tarif exact de la cantine ?",
     "answerable": false
+  }, {
+    "id": "marche-01",
+    "question": "Quel est l'objectif de l'événement La marche tous ensemble ?",
+    "reference": "L'objectif doit être décrit à partir des informations présentes dans le document La marche tous ensemble.",
+    "expected_docs": ["La marche tous ensemble"],
+    "answerable": true
+  },
+  {
+    "id": "marche-02",
+    "question": "Comment se déroule l'événement La marche tous ensemble ?",
+    "reference": "Le déroulement de l'événement doit être expliqué en reprenant les étapes et les modalités indiquées dans le document.",
+    "expected_docs": ["La marche tous ensemble"],
+    "answerable": true
+  },
+  {
+    "id": "marche-03",
+    "question": "Qui peut participer à La marche tous ensemble ?",
+    "reference": "Les participants doivent être identifiés à partir des publics mentionnés dans le document.",
+    "expected_docs": ["La marche tous ensemble"],
+    "answerable": true
+  },
+  {
+    "id": "marche-04",
+    "question": "Où et quand se déroule La marche tous ensemble ?",
+    "reference": "Le lieu et la date doivent être repris tels qu'ils apparaissent dans le document.",
+    "expected_docs": ["La marche tous ensemble"],
+    "answerable": true
+  },
+  {
+    "id": "marche-05",
+    "question": "Quelles sont les modalités d'inscription ou de participation à La marche tous ensemble ?",
+    "reference": "Les modalités d'inscription ou de participation doivent être extraites du document.",
+    "expected_docs": ["La marche tous ensemble"],
+    "answerable": true
+  },
+  {
+    "id": "musique-01",
+    "question": "Quels instruments de musique font l'objet de factures dans les documents disponibles ?",
+    "reference": "La réponse doit identifier les instruments mentionnés dans les factures.",
+    "expected_docs": ["Factures instruments de musique"],
+    "answerable": true
+  },
+  {
+    "id": "musique-02",
+    "question": "Quel est le montant de la facture concernant les instruments de musique ?",
+    "reference": "Le montant total doit correspondre au montant indiqué sur la facture.",
+    "expected_docs": ["Factures instruments de musique"],
+    "answerable": true
+  },
+  {
+    "id": "musique-03",
+    "question": "Quelle entreprise ou quel fournisseur a émis la facture des instruments de musique ?",
+    "reference": "Le nom du fournisseur doit être celui indiqué sur la facture.",
+    "expected_docs": ["Factures instruments de musique"],
+    "answerable": true
+  },
+  {
+    "id": "musique-04",
+    "question": "À quelle date la facture des instruments de musique a-t-elle été émise ?",
+    "reference": "La date doit correspondre à celle indiquée sur la facture.",
+    "expected_docs": ["Factures instruments de musique"],
+    "answerable": true
+  },
+  {
+    "id": "musique-05",
+    "question": "Quels sont les différents articles et leurs prix sur les factures des instruments de musique ?",
+    "reference": "La réponse doit présenter les articles facturés et leurs prix respectifs.",
+    "expected_docs": ["Factures instruments de musique"],
+    "answerable": true
+  },
+  {
+    "id": "sport-01",
+    "question": "Quels équipements ou articles sportifs apparaissent dans les factures ?",
+    "reference": "La réponse doit identifier les équipements sportifs mentionnés dans les factures.",
+    "expected_docs": ["Factures sport"],
+    "answerable": true
+  },
+  {
+    "id": "sport-02",
+    "question": "Quel est le montant total des factures liées au sport ?",
+    "reference": "Le montant doit correspondre au total indiqué dans les factures.",
+    "expected_docs": ["Factures sport"],
+    "answerable": true
+  },
+  {
+    "id": "sport-03",
+    "question": "Quels fournisseurs ont émis les factures concernant le matériel sportif ?",
+    "reference": "La réponse doit identifier les fournisseurs indiqués sur les factures.",
+    "expected_docs": ["Factures sport"],
+    "answerable": true
+  },
+  {
+    "id": "sport-04",
+    "question": "Quelles sont les dates des factures concernant le matériel sportif ?",
+    "reference": "La réponse doit reprendre les dates figurant sur les factures.",
+    "expected_docs": ["Factures sport"],
+    "answerable": true
+  },
+  {
+    "id": "sport-05",
+    "question": "Peux-tu détailler les articles sportifs facturés avec leurs quantités et leurs prix ?",
+    "reference": "La réponse doit présenter les articles, leurs quantités et leurs prix tels qu'ils apparaissent sur les factures.",
+    "expected_docs": ["Factures sport"],
+    "answerable": true
+  },
+  {
+    "id": "hors-sujet-03",
+    "question": "Combien d'agents travaillent actuellement à la mairie ?",
+    "answerable": false
+  },
+  {
+    "id": "hors-sujet-04",
+    "question": "Quel est le montant total du budget municipal consacré aux associations ?",
+    "answerable": false
+  },
+  {
+    "id": "hors-sujet-05",
+    "question": "Quel est le numéro de téléphone personnel du fournisseur des instruments de musique ?",
+    "answerable": false
   }
 ]

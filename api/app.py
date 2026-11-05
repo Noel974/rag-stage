@@ -741,18 +741,17 @@ def get_metrics_history():
 
 
 
+
 # ============================================================
 # RAGAS EVALUATION API
 # ============================================================
 
-# ============================================================
-# CONFIGURATION RAGAS
-# ============================================================
-
 RAGAS_RESULTS_DIR = Path(
-    os.environ.get("RAGAS_RESULTS_DIR", "/app/results")
+    os.environ.get(
+        "RAGAS_RESULTS_DIR",
+        "/app/evaluation/results"
+    )
 )
-
 RAGAS_DATASET_PATH = Path(
     os.environ.get(
         "RAGAS_DATASET_PATH",
@@ -766,27 +765,86 @@ RAGAS_RESULTS_DIR.mkdir(
 )
 
 
+def load_ragas_result(file):
+    """Charge un résultat RAGAS et extrait ses informations."""
+
+    with file.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    aggregate = data.get("aggregate") or {}
+
+    # Compatibilité avec plusieurs formats de résultats
+    questions = (
+        data.get("results")
+        or data.get("test_results")
+        or data.get("rows")
+        or []
+    )
+
+    return {
+        "id": file.stem,
+        "filename": file.name,
+        "created_at": data.get("started_at")
+            or data.get("created_at")
+            or None,
+        "total_questions": len(questions),
+        "aggregate": aggregate,
+        "metrics": {
+            "hit_rate": aggregate.get("hit_rate"),
+            "mrr": aggregate.get("mrr"),
+            "faithfulness": aggregate.get("faithfulness"),
+            "answer_relevancy": aggregate.get("answer_relevancy"),
+            "context_precision": aggregate.get("context_precision"),
+            "context_recall": aggregate.get("context_recall"),
+            "avg_latency_ms": aggregate.get("avg_latency_ms"),
+        },
+        "data": data
+    }
+
+
+def get_evaluation_file(evaluation_id):
+    """Vérifie et retourne le fichier JSON d'une évaluation."""
+
+    if not re.fullmatch(r"[A-Za-z0-9_-]+", evaluation_id):
+        return None
+
+    file = RAGAS_RESULTS_DIR / f"{evaluation_id}.json"
+
+    if not file.is_file():
+        return None
+
+    return file
+
+
+# ------------------------------------------------------------
+# LISTE DES EVALUATIONS
+# ------------------------------------------------------------
+
 @app.get("/api/evaluations")
 def list_evaluations():
 
-    RAGAS_RESULTS_DIR.mkdir(
-        parents=True,
-        exist_ok=True
-    )
-
     evaluations = []
 
-    for file in sorted(
+    files = sorted(
         RAGAS_RESULTS_DIR.glob("*.json"),
         key=lambda f: f.stat().st_mtime,
         reverse=True
-    ):
+    )
 
-        evaluations.append({
-            "id": file.stem,
-            "filename": file.name,
-            "created_at": file.stat().st_mtime
-        })
+    for file in files:
+        try:
+            result = load_ragas_result(file)
+
+            evaluations.append({
+                "id": result["id"],
+                "filename": result["filename"],
+                "created_at": result["created_at"],
+                "total_questions": result["total_questions"],
+                "aggregate": result["metrics"]
+            })
+
+        except (json.JSONDecodeError, OSError):
+            log.exception("Erreur lecture %s", file.name)
 
     return jsonify({
         "total": len(evaluations),
@@ -794,54 +852,57 @@ def list_evaluations():
     })
 
 
-# ==========================================
-# RAGAS : Détail d'une évaluation
-# ==========================================
+# ------------------------------------------------------------
+# DETAIL D'UNE EVALUATION
+# ------------------------------------------------------------
 
 @app.get("/api/evaluations/<evaluation_id>")
 def get_evaluation(evaluation_id):
 
-    # Autoriser les lettres, chiffres, tirets et underscores
-    # Important : tes identifiants contiennent des underscores !
-    if not re.fullmatch(r"[A-Za-z0-9_-]+", evaluation_id):
-        return jsonify({
-            "error": "Identifiant invalide"
-        }), 400
+    file = get_evaluation_file(evaluation_id)
 
-    file = RAGAS_RESULTS_DIR / f"{evaluation_id}.json"
-
-    if not file.is_file():
+    if not file:
         return jsonify({
-            "error": "Evaluation introuvable"
+            "error": "Evaluation introuvable."
         }), 404
 
     try:
-        with file.open("r", encoding="utf-8") as f:
-            result = json.load(f)
+        result = load_ragas_result(file)
 
-        return jsonify(result)
+        return jsonify({
+            "id": result["id"],
+            "filename": result["filename"],
+            "created_at": result["created_at"],
+            "total_questions": result["total_questions"],
+            "aggregate": result["aggregate"],
+            "metrics": result["metrics"],
+            "results": result["data"].get("results", []),
+            "data": result["data"]
+        })
 
     except json.JSONDecodeError:
         return jsonify({
-            "error": "Fichier de résultat invalide"
+            "error": "Fichier JSON invalide."
         }), 500
 
     except OSError:
+        log.exception("Impossible de lire le résultat RAGAS")
+
         return jsonify({
-            "error": "Impossible de lire le fichier"
+            "error": "Impossible de lire le fichier."
         }), 500
 
 
-# ==========================================
-# RAGAS : Dataset
-# ==========================================
+# ------------------------------------------------------------
+# DATASET RAGAS
+# ------------------------------------------------------------
 
 @app.get("/api/evaluations/dataset")
 def get_evaluation_dataset():
 
     if not RAGAS_DATASET_PATH.is_file():
         return jsonify({
-            "error": "Dataset introuvable"
+            "error": "Dataset introuvable."
         }), 404
 
     try:
@@ -854,74 +915,81 @@ def get_evaluation_dataset():
         return jsonify(dataset)
 
     except (json.JSONDecodeError, OSError):
+        log.exception("Erreur lecture dataset")
+
         return jsonify({
-            "error": "Impossible de lire le dataset"
+            "error": "Impossible de lire le dataset."
         }), 500
+
+
+# ------------------------------------------------------------
+# HISTORIQUE DES EVALUATIONS
+# ------------------------------------------------------------
 
 @app.get("/api/evaluations/history")
 def evaluations_history():
 
     results = []
 
-    for file in sorted(
+    files = sorted(
         RAGAS_RESULTS_DIR.glob("*.json"),
-        key=lambda f: f.stat().st_mtime
-    ):
-        try:
-            with file.open("r", encoding="utf-8") as f:
-                data = json.load(f)
+        key=lambda f: f.stat().st_mtime,
+        reverse=True
+    )
 
-            agg = data.get("aggregate", {})
+    for file in files:
+
+        try:
+            result = load_ragas_result(file)
 
             results.append({
-                "id": file.stem,
-                "created_at": data.get("started_at"),
-                "hit_rate": agg.get("hit_rate"),
-                "mrr": agg.get("mrr"),
-                "faithfulness": agg.get("faithfulness"),
-                "answer_relevancy": agg.get("answer_relevancy"),
-                "context_precision": agg.get("context_precision"),
-                "context_recall": agg.get("context_recall"),
-                "avg_latency_ms": agg.get("avg_latency_ms"),
+                "id": result["id"],
+                "filename": result["filename"],
+                "created_at": result["created_at"],
+                "total_questions": result["total_questions"],
+                **result["metrics"]
             })
 
-        except Exception:
+        except (json.JSONDecodeError, OSError):
             log.exception(
                 "Impossible de lire %s",
                 file.name
             )
 
-    return jsonify(results)
+    return jsonify({
+        "total": len(results),
+        "history": results
+    })
 
-# ==========================================
-# RAGAS : Toutes les métriques
-# ==========================================
+
+# ------------------------------------------------------------
+# TOUTES LES METRIQUES
+# ------------------------------------------------------------
 
 @app.get("/api/evaluations/metrics")
 def get_evaluation_metrics():
 
-    print("Dossier utilisé :", RAGAS_RESULTS_DIR.resolve())
-
-    files = list(RAGAS_RESULTS_DIR.glob("*.json"))
-
-    print("Nombre de fichiers :", len(files))
-
     results = []
 
-    for file in files:
+    for file in sorted(
+        RAGAS_RESULTS_DIR.glob("*.json"),
+        key=lambda f: f.stat().st_mtime,
+        reverse=True
+    ):
 
         try:
-            with file.open("r", encoding="utf-8") as f:
-                data = json.load(f)
+            result = load_ragas_result(file)
 
             results.append({
-                "id": file.stem,
-                "filename": file.name,
-                "metrics": data
+                "id": result["id"],
+                "filename": result["filename"],
+                "created_at": result["created_at"],
+                "total_questions": result["total_questions"],
+                "metrics": result["metrics"]
             })
 
         except (json.JSONDecodeError, OSError):
-            log.warning(
+            log.exception(
                 "Résultat RAGAS illisible : %s",
                 file.name
             )
@@ -931,11 +999,63 @@ def get_evaluation_metrics():
         "results": results
     })
 
-if __name__ == "__main__":
-    print(app.url_map)
 
-    app.run(
-        host="0.0.0.0",
-        port=8000,
-        debug=True
-    )
+# ------------------------------------------------------------
+# STATISTIQUES GLOBALES
+# ------------------------------------------------------------
+
+@app.get("/api/evaluations/summary")
+def evaluations_summary():
+
+    files = list(RAGAS_RESULTS_DIR.glob("*.json"))
+
+    total_runs = 0
+    total_questions = 0
+
+    metric_values = {
+        "hit_rate": [],
+        "mrr": [],
+        "faithfulness": [],
+        "answer_relevancy": [],
+        "context_precision": [],
+        "context_recall": [],
+        "avg_latency_ms": []
+    }
+
+    for file in files:
+
+        try:
+            result = load_ragas_result(file)
+
+            total_runs += 1
+            total_questions += result["total_questions"]
+
+            for metric, value in result["metrics"].items():
+
+                if (
+                    metric in metric_values
+                    and isinstance(value, (int, float))
+                    and not isinstance(value, bool)
+                ):
+                    metric_values[metric].append(float(value))
+
+        except (json.JSONDecodeError, OSError):
+            log.exception(
+                "Erreur statistiques : %s",
+                file.name
+            )
+
+    averages = {}
+
+    for metric, values in metric_values.items():
+
+        averages[metric] = (
+            round(sum(values) / len(values), 4)
+            if values else None
+        )
+
+    return jsonify({
+        "total_runs": total_runs,
+        "total_questions": total_questions,
+        "average_metrics": averages
+    })
