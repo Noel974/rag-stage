@@ -1,7 +1,5 @@
-# RAG Google Drive : Kestra, pgvector, Flask et Mistral
+# Assistant IA
 
-<<<<<<< HEAD
-=======
 
 ## 👤 Auteur
 
@@ -13,7 +11,6 @@ Projet réalisé par **Noel Emmanuel**
 
 ---
 
->>>>>>> 842f976 (mise a jour reademe)
 Prototype de système RAG (Retrieval-Augmented Generation) qui indexe automatiquement les documents d'un dossier Google Drive et permet de les interroger en langage naturel.
 
 - **Orchestration** : Kestra planifie et exécute l'ingestion (Drive, extraction, découpage, embeddings, pgvector).
@@ -47,10 +44,6 @@ Prototype de système RAG (Retrieval-Augmented Generation) qui indexe automatiqu
 ---
 
 ## 1. Architecture
-
-```
-
-## 🏗️ Architecture du projet
 
 Le projet repose sur une architecture RAG (Retrieval-Augmented Generation) permettant d'interroger des documents stockés sur Google Drive.
 
