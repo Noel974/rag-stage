@@ -49,9 +49,119 @@ Prototype de système RAG (Retrieval-Augmented Generation) qui indexe automatiqu
 ## 1. Architecture
 
 ```
-Google Drive ──► Kestra (flow ingest_drive) ──écrit──► pgvector ◄──lit── API Flask ◄──► React
-                     │                                                     │
-                     └──► Slack (résumé / erreurs)                          └──► Mistral (génération)
+
+## 🏗️ Architecture du projet
+
+Le projet repose sur une architecture RAG (Retrieval-Augmented Generation) permettant d'interroger des documents stockés sur Google Drive.
+
+### Architecture globale
+
+```mermaid
+flowchart TB
+    A["Google Drive<br/>Source documentaire"]
+
+    subgraph INGESTION["Pipeline d'ingestion - Kestra"]
+        B["Récupération des documents"]
+        C["Extraction du contenu"]
+        D["Nettoyage et normalisation"]
+        E["Découpage en chunks"]
+        F["Génération des embeddings<br/>multilingual-e5-base"]
+        G["Indexation"]
+        
+        B --> C --> D --> E --> F --> G
+    end
+
+    subgraph STORAGE["Stockage vectoriel"]
+        H[("PostgreSQL<br/>+ pgvector")]
+    end
+
+    subgraph BACKEND["Backend - API Flask"]
+        I["API REST"]
+        J["Embedding de la question"]
+        K["Recherche vectorielle<br/>Top-K"]
+        L["Récupération du contexte"]
+        M["Génération avec Mistral"]
+
+        I --> J --> K --> L --> M
+    end
+
+    subgraph FRONTEND["Frontend"]
+        N["Interface React"]
+        O["Question utilisateur"]
+        P["Réponse avec sources"]
+
+        N --> O
+        P --> N
+    end
+
+    A --> B
+    G --> H
+    H --> K
+    O --> I
+    M --> P
+```
+
+### Flux de traitement des documents
+
+```mermaid
+flowchart TD
+    A["Google Drive"] --> B["Déclenchement du workflow Kestra"]
+    B --> C["Récupération des fichiers"]
+    C --> D["Extraction du contenu"]
+    D --> E["Nettoyage des données"]
+    E --> F["Découpage en chunks"]
+    F --> G["Génération des embeddings"]
+    G --> H["Indexation dans pgvector"]
+    H --> I["Documents disponibles pour le RAG"]
+```
+
+### Flux de question-réponse (RAG)
+
+```mermaid
+sequenceDiagram
+    actor User as Utilisateur
+    participant UI as Frontend React
+    participant API as API Flask
+    participant EMB as Embeddings
+    participant DB as PostgreSQL / pgvector
+    participant LLM as Mistral
+
+    User->>UI: Pose une question
+    UI->>API: Envoi de la question
+    API->>EMB: Vectorisation de la question
+    EMB-->>API: Embedding
+    API->>DB: Recherche vectorielle
+    DB-->>API: Chunks pertinents
+    API->>API: Construction du contexte
+    API->>LLM: Question + contexte
+    LLM-->>API: Réponse générée
+    API-->>UI: Réponse + sources
+    UI-->>User: Affichage du résultat
+```
+
+### Stack technique
+
+| Composant | Technologie | Fonction |
+|---|---|---|
+| Source documentaire | Google Drive | Stockage des documents |
+| Orchestration | Kestra | Automatisation du pipeline |
+| Traitement | Python | Extraction et nettoyage |
+| Embeddings | multilingual-e5-base | Vectorisation |
+| Base de données | PostgreSQL + pgvector | Stockage vectoriel |
+| Backend | Flask | API REST |
+| LLM | Mistral | Génération des réponses |
+| Frontend | React | Interface utilisateur |
+| Notifications | Slack | Suivi des traitements |
+| Conteneurisation | Docker | Déploiement |
+
+### Principe de fonctionnement
+
+Le système repose sur deux flux complémentaires :
+
+1. **Ingestion des données (Offline)** : les documents présents sur Google Drive sont récupérés et traités par un workflow Kestra. Les contenus sont nettoyés, découpés en chunks, vectorisés puis indexés dans PostgreSQL avec pgvector.
+
+2. **Recherche et génération (Online)** : l'utilisateur pose une question depuis l'interface React. L'API Flask transforme la question en embedding, recherche les chunks pertinents dans pgvector et transmet le contexte au modèle Mistral pour générer une réponse accompagnée de ses sources.
+
 ```
 
 Kestra et l'API ne communiquent pas directement : **la base pgvector est le point de rencontre**. Kestra écrit, l'API lit.
